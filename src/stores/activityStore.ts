@@ -30,7 +30,7 @@ export const useActivityStore = create<ActivityState>()(
       loadActivities: async () => {
         set({ loading: true, error: null })
         try {
-          const res = await fetch('/data/activities.json')
+          const res = await fetch(`${import.meta.env.BASE_URL}data/activities.json`)
           if (!res.ok) throw new Error(`No se encontró /data/activities.json (status ${res.status})`)
           const data: ActivitySummary[] = await res.json()
           data.sort((a, b) => b.startTime.localeCompare(a.startTime))
@@ -42,7 +42,7 @@ export const useActivityStore = create<ActivityState>()(
 
       loadStats: async () => {
         try {
-          const res = await fetch('/data/stats.json')
+          const res = await fetch(`${import.meta.env.BASE_URL}data/stats.json`)
           if (!res.ok) return
           const data: GlobalStats = await res.json()
           set({ stats: data })
@@ -59,7 +59,7 @@ export const useActivityStore = create<ActivityState>()(
         const cached = get().detailCache[id]
         if (cached) return cached
         try {
-          const res = await fetch(`/data/activity_${id}.json`)
+          const res = await fetch(`${import.meta.env.BASE_URL}data/activity_${id}.json`)
           if (!res.ok) return null
           const detail: ActivityDetail = await res.json()
           set(state => ({ detailCache: { ...state.detailCache, [id]: detail } }))
