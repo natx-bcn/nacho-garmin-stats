@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import { useActivityStore } from './stores/activityStore'
 import Sidebar from './components/Sidebar'
 import Dashboard from './pages/Dashboard'
@@ -12,8 +12,8 @@ import Settings from './pages/Settings'
 import PerformanceAnalysis from './pages/PerformanceAnalysis'
 
 export default function App() {
-  const loadActivities = useActivityStore(s => s.loadActivities)
-  const loadStats = useActivityStore(s => s.loadStats)
+  const loadActivities = useActivityStore((s) => s.loadActivities)
+  const loadStats = useActivityStore((s) => s.loadStats)
 
   useEffect(() => {
     loadActivities()
@@ -21,7 +21,7 @@ export default function App() {
   }, [loadActivities, loadStats])
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="flex min-h-screen">
         <Sidebar />
         <main className="flex-1 overflow-hidden flex flex-col">
@@ -31,12 +31,12 @@ export default function App() {
             <Route path="/activity/:id" element={<ActivityDetailPage />} />
             <Route path="/fitness" element={<FitnessChartPage />} />
             <Route path="/zones" element={<ZoneAnalysis />} />
-            <Route path="/records" element={<Records />} />
             <Route path="/performance" element={<PerformanceAnalysis />} />
+            <Route path="/records" element={<Records />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
