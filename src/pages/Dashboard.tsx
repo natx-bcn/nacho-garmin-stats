@@ -13,6 +13,7 @@ import FormBadge from '../components/FormBadge'
 import DeltaBadge from '../components/DeltaBadge'
 import RunnerStatusCard from '../components/RunnerStatusCard'
 import CoachCard from '../components/CoachCard'
+import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
 import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -196,6 +197,8 @@ export default function Dashboard() {
           lastWeekTss={lastWeek.tss}
           isAerobicFocused={isAerobicFocused}
         />
+		
+		<WeeklyCalendarCard activities={activities} />
 
         {/* Week comparison */}
         <section>
