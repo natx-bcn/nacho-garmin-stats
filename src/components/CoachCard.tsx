@@ -1,4 +1,4 @@
-import { evaluateCoach } from '../lib/coach/coachEngine'
+import { evaluateCoach } from '../lib/athena'
 import Card from './ui/Card'
 import Badge from './ui/Badge'
 
