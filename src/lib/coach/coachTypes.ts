@@ -18,7 +18,6 @@ export type CoachColor =
   | 'green'
   | 'blue'
   | 'yellow'
-  | 'orange'
   | 'red'
 
 export interface CoachInput {

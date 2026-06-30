@@ -12,8 +12,7 @@ import usePerformanceEngine from '../hooks/usePerformanceEngine'
 
 import HeroSection from '../components/dashboard/HeroSection'
 import RadialProgress from '../components/RadialProgress'
-import RunnerStatusCard from '../components/RunnerStatusCard'
-import CoachCard from '../components/CoachCard'
+import AICoachCard from '../components/dashboard/AICoachCard'
 import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
 import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
 import RacePredictionsCard from '../components/RacePredictionsCard'
@@ -117,21 +116,18 @@ export default function Dashboard() {
       <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 lg:px-6">
         <InsightsPanel insights={insights} />
         
-        <RunnerStatusCard
+        <AICoachCard
           tsb={tsb}
           ctl={ctl}
           atl={atl}
-          weekTss={week.tss}
-          lastWeekTss={lastWeek.tss}
-        />
-
-        <CoachCard
-          tsb={tsb}
           weekCount={week.count}
           weekDistance={week.distance}
           weekTss={week.tss}
           lastWeekTss={lastWeek.tss}
           isAerobicFocused={isAerobicFocused}
+          daysSinceLastActivity={
+            activities.length ? daysAgo(activities[0].startTime) : undefined
+          }
         />
 
         <WeeklyGoalsCard />

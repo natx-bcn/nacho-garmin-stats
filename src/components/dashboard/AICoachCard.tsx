@@ -1,6 +1,6 @@
-import { evaluateCoach } from '../lib/coach/coachEngine'
-import Card from './ui/Card'
-import Badge from './ui/Badge'
+import { evaluateCoach } from '../../lib/coach/coachEngine'
+import Card from '../ui/Card'
+import Badge from '../ui/Badge'
 
 type CoachCardProps = {
   tsb: number
