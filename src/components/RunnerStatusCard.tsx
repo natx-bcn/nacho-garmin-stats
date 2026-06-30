@@ -1,4 +1,6 @@
-﻿type RunnerStatusCardProps = {
+﻿import { analyzeRunnerStatus } from '../lib/athena'
+
+type RunnerStatusCardProps = {
   tsb: number
   ctl: number
   atl: number
@@ -13,7 +15,7 @@ export default function RunnerStatusCard({
   weekTss,
   lastWeekTss,
 }: RunnerStatusCardProps) {
-  const status = getStatus(tsb, weekTss, lastWeekTss)
+  const status = analyzeRunnerStatus(tsb, weekTss, lastWeekTss)
   const loadStatus = getLoadStatus(weekTss, lastWeekTss)
   const recovery = getRecovery(tsb, atl)
   const injuryRisk = getInjuryRisk(tsb, weekTss, lastWeekTss)
@@ -142,46 +144,6 @@ function StatePill({
       <div className="text-xs text-slate-500 mt-2 leading-relaxed">{detail}</div>
     </div>
   )
-}
-
-function getStatus(tsb: number, weekTss: number, lastWeekTss: number) {
-  if (tsb < -25) {
-    return {
-      title: 'Fatiga alta',
-      subtitle: 'Estás acumulando demasiado desgaste.',
-      color: '#ef4444',
-    }
-  }
-
-  if (tsb < -12) {
-    return {
-      title: 'Cuidado',
-      subtitle: 'La carga es buena, pero no conviene apretar más.',
-      color: '#f97316',
-    }
-  }
-
-  if (lastWeekTss > 0 && weekTss > lastWeekTss * 1.3) {
-    return {
-      title: 'Subida fuerte',
-      subtitle: 'La carga semanal está creciendo rápido.',
-      color: '#eab308',
-    }
-  }
-
-  if (tsb > 10) {
-    return {
-      title: 'Fresco',
-      subtitle: 'Buen momento para una sesión de calidad controlada.',
-      color: '#22c55e',
-    }
-  }
-
-  return {
-    title: 'Muy bien',
-    subtitle: 'Carga equilibrada y buena base para seguir progresando.',
-    color: '#22c55e',
-  }
 }
 
 function getLoadStatus(weekTss: number, lastWeekTss: number) {

@@ -1,6 +1,6 @@
 export interface RunnerStatusAnalysis {
-  label: string
-  description: string
+  title: string
+  subtitle: string
   color: string
   icon: string
 }
@@ -12,8 +12,8 @@ export function analyzeRunnerStatus(
 ): RunnerStatusAnalysis {
   if (tsb < -25) {
     return {
-      label: 'Sobrecarga',
-      description: 'Fatiga alta acumulada',
+      title: 'Sobrecarga',
+      subtitle: 'Fatiga alta acumulada',
       color: '#ef4444',
       icon: 'AlertTriangle',
     }
@@ -21,8 +21,8 @@ export function analyzeRunnerStatus(
 
   if (tsb < -12) {
     return {
-      label: 'Carga alta',
-      description: 'Entrenando fuerte',
+      title: 'Carga alta',
+      subtitle: 'Entrenando fuerte',
       color: '#f97316',
       icon: 'Flame',
     }
@@ -30,8 +30,8 @@ export function analyzeRunnerStatus(
 
   if (lastWeekTss > 0 && weekTss > lastWeekTss * 1.3) {
     return {
-      label: 'Subida de carga',
-      description: 'Semana exigente',
+      title: 'Subida de carga',
+      subtitle: 'Semana exigente',
       color: '#eab308',
       icon: 'TrendingUp',
     }
@@ -39,16 +39,16 @@ export function analyzeRunnerStatus(
 
   if (tsb > 10) {
     return {
-      label: 'Descansado',
-      description: 'Listo para apretar',
+      title: 'Descansado',
+      subtitle: 'Listo para apretar',
       color: '#22c55e',
       icon: 'Zap',
     }
   }
 
   return {
-    label: 'Productivo',
-    description: 'Buen equilibrio carga-recuperación',
+    title: 'Productivo',
+    subtitle: 'Buen equilibrio carga-recuperación',
     color: '#3b82f6',
     icon: 'Activity',
   }
