@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 import { useActivityStore } from '../stores/activityStore'
 import { buildPerformanceRecords } from '../lib/performance/records'
 import { buildPerformanceLoad } from '../lib/performance/load'
+import { buildPerformanceTrend } from '../lib/performance/trend'
+
 
 export default function usePerformanceEngine() {
   const activities = useActivityStore(s => s.activities)
@@ -9,6 +11,7 @@ export default function usePerformanceEngine() {
   return useMemo(() => {
     const records = buildPerformanceRecords(activities)
     const load = buildPerformanceLoad(activities)
+	const trend = buildPerformanceTrend(activities)
 
     return {
       activities,
@@ -21,6 +24,7 @@ export default function usePerformanceEngine() {
       longestRun: records.longestRun,
 
       load,
+	  trend,
       currentWeek: load.currentWeek,
       previousWeek: load.previousWeek,
       loadRatio: load.ratio,
