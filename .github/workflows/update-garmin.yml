@@ -12,6 +12,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: github-pages
@@ -29,6 +30,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Restore Garmin data cache
+        uses: actions/cache@v4
+        with:
+          path: public/data
+          key: garmin-data-${{ github.run_id }}
+          restore-keys: |
+            garmin-data-
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -41,12 +50,12 @@ jobs:
         env:
           GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
-        run: python fetch/sync.py --no-gpx
+        run: python fetch/sync.py --limit 30 --no-gpx
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: npm
 
       - name: Install Node dependencies
