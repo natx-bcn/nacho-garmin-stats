@@ -1,3 +1,6 @@
+import Card from './ui/Card'
+import Badge from './ui/Badge'
+
 type CoachCardProps = {
   tsb: number
   weekCount: number
@@ -15,154 +18,183 @@ export default function CoachCard({
   lastWeekTss,
   isAerobicFocused,
 }: CoachCardProps) {
-  const messages = buildCoachMessages({
-    tsb,
-    weekCount,
-    weekDistance,
-    weekTss,
-    lastWeekTss,
-    isAerobicFocused,
-  })
+
+  const loadRatio =
+    lastWeekTss > 0 ? weekTss / lastWeekTss : 1
+
+  const status =
+    tsb > 8
+      ? {
+          text: 'Muy bien',
+          color: 'green' as const,
+        }
+      : tsb > -8
+      ? {
+          text: 'Correcto',
+          color: 'blue' as const,
+        }
+      : tsb > -18
+      ? {
+          text: 'Fatigado',
+          color: 'yellow' as const,
+        }
+      : {
+          text: 'Sobrecarga',
+          color: 'red' as const,
+        }
 
   return (
-    <section className="rounded-2xl border border-slate-700/50 bg-slate-900/60 p-5">
-      <div className="flex items-start justify-between gap-4 mb-4">
+    <Card>
+
+      <div className="flex items-center justify-between mb-5">
+
         <div>
-          <div className="text-xs text-slate-500 uppercase tracking-widest mb-1">
-            Coach crítico
+
+          <div className="text-xs uppercase tracking-[0.25em] text-slate-500">
+            Coach
           </div>
-          <h2 className="text-xl font-black text-slate-100">
-            Lectura de la semana
+
+          <h2 className="text-2xl font-black text-slate-100">
+            Recomendación
           </h2>
+
         </div>
 
-        <div className="rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-bold text-purple-300">
-          Beta
-        </div>
+        <Badge color={status.color}>
+          {status.text}
+        </Badge>
+
       </div>
 
       <div className="space-y-3">
-        {messages.map((message) => (
-          <div key={message.text} className="flex items-start gap-3">
-            <span
-              className="mt-1 h-2.5 w-2.5 rounded-full shrink-0"
-              style={{
-                background: message.color,
-                boxShadow: `0 0 12px ${message.color}`,
-              }}
-            />
-            <div>
-              <div className="text-sm font-semibold text-slate-200">
-                {message.title}
-              </div>
-              <div className="text-xs text-slate-400 leading-relaxed mt-0.5">
-                {message.text}
-              </div>
-            </div>
-          </div>
-        ))}
+
+        <CoachLine
+          ok={weekCount >= 3}
+          text={`Sesiones esta semana: ${weekCount}`}
+        />
+
+        <CoachLine
+          ok={loadRatio < 1.20}
+          text={
+            loadRatio < 1.20
+              ? 'Carga semanal controlada'
+              : 'Carga aumentando demasiado'
+          }
+        />
+
+        <CoachLine
+          ok={isAerobicFocused}
+          text={
+            isAerobicFocused
+              ? 'Base aeróbica correcta'
+              : 'Necesitas más Z2'
+          }
+        />
+
       </div>
-    </section>
+
+      <div className="border-t border-slate-700 my-5"/>
+
+      <div>
+
+        <div className="text-xs uppercase tracking-widest text-slate-500 mb-3">
+
+          Hoy haría
+
+        </div>
+
+        <div className="space-y-2">
+
+          {tsb < -15 && (
+            <Recommendation text="Descanso o movilidad" />
+          )}
+
+          {tsb >= -15 && tsb <= 8 && (
+            <>
+              <Recommendation text="Fuerza preventiva" />
+              <Recommendation text="30-45 min suaves" />
+            </>
+          )}
+
+          {tsb > 8 && (
+            <>
+              <Recommendation text="Entrenamiento de calidad" />
+              <Recommendation text="Estás fresco para exigir" />
+            </>
+          )}
+
+        </div>
+
+      </div>
+
+      <div className="border-t border-slate-700 my-5"/>
+
+      <div className="flex justify-between">
+
+        <div>
+
+          <div className="text-xs text-slate-500">
+            Distancia
+          </div>
+
+          <div className="text-xl font-bold text-slate-100">
+            {weekDistance.toFixed(1)} km
+          </div>
+
+        </div>
+
+        <div className="text-right">
+
+          <div className="text-xs text-slate-500">
+            TSS
+          </div>
+
+          <div className="text-xl font-bold text-slate-100">
+            {Math.round(weekTss)}
+          </div>
+
+        </div>
+
+      </div>
+
+    </Card>
   )
 }
 
-function buildCoachMessages({
-  tsb,
-  weekCount,
-  weekDistance,
-  weekTss,
-  lastWeekTss,
-  isAerobicFocused,
-}: CoachCardProps) {
-  const messages: Array<{
-    title: string
-    text: string
-    color: string
-  }> = []
+function CoachLine({
+  ok,
+  text,
+}: {
+  ok: boolean
+  text: string
+}) {
+  return (
+    <div className="flex items-center gap-3">
 
-  const loadRatio = lastWeekTss > 0 ? weekTss / lastWeekTss : 1
+      <div
+        className={`h-2.5 w-2.5 rounded-full ${
+          ok
+            ? 'bg-green-400'
+            : 'bg-yellow-400'
+        }`}
+      />
 
-  if (weekCount >= 4) {
-    messages.push({
-      title: 'Buena constancia',
-      text: `Llevas ${weekCount} sesiones esta semana. La regularidad está bien, pero no conviertas todos los días en días exigentes.`,
-      color: '#22c55e',
-    })
-  } else if (weekCount >= 2) {
-    messages.push({
-      title: 'Semana correcta',
-      text: `Llevas ${weekCount} sesiones. Vas sumando sin pasarte, buena base para construir.`,
-      color: '#3b82f6',
-    })
-  } else {
-    messages.push({
-      title: 'Semana todavía floja',
-      text: 'Aún hay poca carga registrada. Prioriza continuidad antes que intensidad.',
-      color: '#eab308',
-    })
-  }
+      <div className="text-sm text-slate-300">
+        {text}
+      </div>
 
-  if (loadRatio > 1.35) {
-    messages.push({
-      title: 'Ojo con la subida de carga',
-      text: 'La carga semanal está subiendo demasiado respecto a la semana anterior. No añadiría series duras.',
-      color: '#ef4444',
-    })
-  } else if (loadRatio > 1.15) {
-    messages.push({
-      title: 'Carga en aumento',
-      text: 'La semana va por encima de la anterior. Bien si las piernas responden, pero controla gemelo, sóleo y aductores.',
-      color: '#eab308',
-    })
-  } else {
-    messages.push({
-      title: 'Carga controlada',
-      text: 'La progresión semanal está dentro de un rango razonable. Buen escenario para consolidar.',
-      color: '#22c55e',
-    })
-  }
+    </div>
+  )
+}
 
-  if (tsb < -18) {
-    messages.push({
-      title: 'Fatiga alta',
-      text: 'La forma está bastante negativa. Hoy no toca demostrar nada: descarga, movilidad o rodaje muy fácil.',
-      color: '#ef4444',
-    })
-  } else if (tsb < -8) {
-    messages.push({
-      title: 'Fatiga moderada',
-      text: 'Hay cansancio acumulado. Mejor una sesión fácil que forzar una calidad mediocre.',
-      color: '#f97316',
-    })
-  } else if (tsb > 8) {
-    messages.push({
-      title: 'Buen margen para calidad',
-      text: 'Estás relativamente fresco. Puedes meter calidad, pero manteniendo el control.',
-      color: '#22c55e',
-    })
-  }
-
-  if (!isAerobicFocused) {
-    messages.push({
-      title: 'Falta base aeróbica',
-      text: 'El reparto por zonas sugiere que conviene meter más Z1/Z2. Para mejorar sin lesionarte, esto es clave.',
-      color: '#eab308',
-    })
-  } else {
-    messages.push({
-      title: 'Buena base aeróbica',
-      text: 'El reparto de zonas es saludable. Mantén ese trabajo fácil porque es lo que te permite asimilar la calidad.',
-      color: '#22c55e',
-    })
-  }
-
-  if (weekDistance > 0) {
-    messages.push({
-      title: 'Resumen práctico',
-      text: `Esta semana llevas ${weekDistance.toFixed(1)} km. La prioridad debe ser llegar al domingo con piernas, no solo sumar por sumar.`,
-      color: '#3b82f6',
-    })
-  }
-
-  return messages.slice(0, 5)
+function Recommendation({
+  text,
+}: {
+  text: string
+}) {
+  return (
+    <div className="rounded-xl bg-slate-800 px-3 py-2 text-sm text-slate-200">
+      💡 {text}
+    </div>
+  )
 }
