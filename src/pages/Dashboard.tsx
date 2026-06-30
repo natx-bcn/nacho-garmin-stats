@@ -17,7 +17,7 @@ import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
 import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
 import RacePredictionsCard from '../components/RacePredictionsCard'
 import SyncStatusCard from '../components/SyncStatusCard'
-
+import TrainingSummaryCard from '../components/TrainingSummaryCard'
 
 import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
@@ -211,6 +211,8 @@ export default function Dashboard() {
 		  activities={activities}
 		/>
 
+		<TrainingSummaryCard />
+		
         <section>
           <SectionHeader left="Esta semana" right="vs semana anterior" />
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
