@@ -1,14 +1,23 @@
 import { NavLink } from 'react-router-dom'
+import {
+  Activity,
+  Award,
+  BarChart3,
+  Flame,
+  Gauge,
+  Home,
+  Settings,
+} from 'lucide-react'
 import { useActivityStore } from '../stores/activityStore'
 
 const NAV = [
-  { to: '/', label: 'Dashboard', shortLabel: 'Inicio', icon: '◉' },
-  { to: '/activities', label: 'Actividades', shortLabel: 'Activ.', icon: '▤' },
-  { to: '/fitness', label: 'Fitness & Forma', shortLabel: 'Fitness', icon: '📈' },
-  { to: '/zones', label: 'Zonas', shortLabel: 'Zonas', icon: '🔥' },
-  { to: '/performance', label: 'Rendimiento', shortLabel: 'Rend.', icon: '⚡' },
-  { to: '/records', label: 'Récords', shortLabel: 'Récords', icon: '🏅' },
-  { to: '/settings', label: 'Ajustes', shortLabel: 'Ajustes', icon: '⚙' },
+  { to: '/', label: 'Dashboard', shortLabel: 'Inicio', Icon: Home },
+  { to: '/activities', label: 'Actividades', shortLabel: 'Activ.', Icon: Activity },
+  { to: '/fitness', label: 'Fitness & Forma', shortLabel: 'Fitness', Icon: BarChart3 },
+  { to: '/zones', label: 'Zonas', shortLabel: 'Zonas', Icon: Flame },
+  { to: '/performance', label: 'Rendimiento', shortLabel: 'Rend.', Icon: Gauge },
+  { to: '/records', label: 'Récords', shortLabel: 'Récords', Icon: Award },
+  { to: '/settings', label: 'Ajustes', shortLabel: 'Ajustes', Icon: Settings },
 ]
 
 export default function Sidebar() {
@@ -26,7 +35,7 @@ export default function Sidebar() {
         </div>
 
         <nav className="flex-1 py-4 px-2 space-y-0.5">
-          {NAV.map(({ to, label, icon }) => (
+          {NAV.map(({ to, label, Icon }) => (
             <NavLink
               key={to}
               to={to}
@@ -39,7 +48,7 @@ export default function Sidebar() {
                 }`
               }
             >
-              <span className="text-base">{icon}</span>
+              <Icon className="h-4 w-4 shrink-0" strokeWidth={2.2} />
               <span className="truncate">{label}</span>
             </NavLink>
           ))}
@@ -62,7 +71,7 @@ export default function Sidebar() {
 
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-slate-700/70 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/80">
         <div className="grid grid-cols-5 gap-1 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
-          {NAV.slice(0, 5).map(({ to, shortLabel, icon }) => (
+          {NAV.slice(0, 5).map(({ to, shortLabel, Icon }) => (
             <NavLink
               key={to}
               to={to}
@@ -75,7 +84,7 @@ export default function Sidebar() {
                 }`
               }
             >
-              <span className="text-base leading-none">{icon}</span>
+              <Icon className="h-5 w-5" strokeWidth={2.2} />
               <span className="truncate leading-none">{shortLabel}</span>
             </NavLink>
           ))}
