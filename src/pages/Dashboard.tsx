@@ -19,11 +19,9 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
 } from 'recharts'
 
-// ─── Loading / Empty states ───────────────────────────────────────────────────
-
 function LoadingScreen() {
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center min-h-screen">
       <div className="text-slate-400 animate-pulse text-sm">Cargando...</div>
     </div>
   )
@@ -31,10 +29,10 @@ function LoadingScreen() {
 
 function EmptyScreen() {
   return (
-    <div className="flex-1 p-8 max-w-2xl">
-      <div className="bg-amber-950/40 border border-amber-800/50 rounded-xl p-6">
+    <div className="flex-1 p-4 sm:p-8 max-w-2xl">
+      <div className="bg-amber-950/40 border border-amber-800/50 rounded-xl p-5 sm:p-6">
         <h2 className="text-amber-300 font-medium text-lg mb-2">Sin datos de Garmin</h2>
-        <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm text-slate-300 space-y-1 mt-3">
+        <div className="bg-slate-900 rounded-lg p-4 font-mono text-xs sm:text-sm text-slate-300 space-y-1 mt-3 overflow-x-auto">
           <div>cp .env.example .env</div>
           <div>cd fetch && pip install -r requirements.txt</div>
           <div>python3 sync.py --limit 20</div>
@@ -43,8 +41,6 @@ function EmptyScreen() {
     </div>
   )
 }
-
-// ─── Dashboard ────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
   const activities = useActivityStore(s => s.activities)
@@ -69,20 +65,24 @@ export default function Dashboard() {
   const maxWeekTSS = Math.max(...weeklyLoad.map(w => w.tss), 1)
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#080f1e]">
+    <div className="min-w-0 flex-1 overflow-y-auto bg-[#080f1e]">
+      <div
+        className="relative overflow-hidden px-3 sm:px-5 lg:px-6 pt-5 sm:pt-7 pb-5 sm:pb-6"
+        style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0c1a3a 50%, #0f172a 100%)' }}
+      >
+        <div
+          className="absolute top-0 left-1/4 w-72 sm:w-96 h-40 sm:h-48 rounded-full opacity-10 blur-3xl pointer-events-none"
+          style={{ background: tsbColor }}
+        />
 
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden px-6 pt-7 pb-6"
-        style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0c1a3a 50%, #0f172a 100%)' }}>
-        <div className="absolute top-0 left-1/4 w-96 h-48 rounded-full opacity-10 blur-3xl pointer-events-none"
-          style={{ background: tsbColor }} />
-
-        {/* Form title row */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
           <div>
             <div className="text-xs text-slate-500 uppercase tracking-widest mb-1">Estado de forma</div>
             <div className="flex items-center gap-3">
-              <span className="text-4xl font-black" style={{ color: tsbColor, textShadow: `0 0 30px ${tsbColor}66` }}>
+              <span
+                className="text-4xl sm:text-5xl font-black"
+                style={{ color: tsbColor, textShadow: `0 0 30px ${tsbColor}66` }}
+              >
                 {tsb > 0 ? '+' : ''}{Math.round(tsb)}
               </span>
               <div>
@@ -92,11 +92,10 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* VO2max */}
           {stats?.vo2maxHistory?.length ? (
-            <div className="text-right">
+            <div className="sm:text-right">
               <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">VO2max</div>
-              <div className="text-3xl font-black text-purple-400" style={{ textShadow: '0 0 20px #a855f766' }}>
+              <div className="text-3xl sm:text-4xl font-black text-purple-400" style={{ textShadow: '0 0 20px #a855f766' }}>
                 {stats.vo2maxHistory.at(-1)!.value.toFixed(1)}
               </div>
               <div className="text-xs text-slate-500">ml/kg/min</div>
@@ -104,29 +103,30 @@ export default function Dashboard() {
           ) : null}
         </div>
 
-        {/* CTL / ATL radials + streak */}
-        <div className="flex items-center gap-8 mb-6">
-          <div className="flex items-center gap-3">
-            <RadialProgress value={ctl} max={100} color="#3b82f6" size={72} stroke={6}>
-              <span className="text-base font-bold text-blue-300">{Math.round(ctl)}</span>
-            </RadialProgress>
-            <div>
-              <div className="text-xs text-slate-500 uppercase tracking-wider">Fitness</div>
-              <div className="text-xs text-slate-400">CTL · 42 días</div>
+        <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8 mb-6">
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:gap-8">
+            <div className="flex items-center gap-3">
+              <RadialProgress value={ctl} max={100} color="#3b82f6" size={72} stroke={6}>
+                <span className="text-base font-bold text-blue-300">{Math.round(ctl)}</span>
+              </RadialProgress>
+              <div>
+                <div className="text-xs text-slate-500 uppercase tracking-wider">Fitness</div>
+                <div className="text-xs text-slate-400">CTL · 42 días</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <RadialProgress value={atl} max={100} color="#f97316" size={72} stroke={6}>
+                <span className="text-base font-bold text-orange-300">{Math.round(atl)}</span>
+              </RadialProgress>
+              <div>
+                <div className="text-xs text-slate-500 uppercase tracking-wider">Fatiga</div>
+                <div className="text-xs text-slate-400">ATL · 7 días</div>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <RadialProgress value={atl} max={100} color="#f97316" size={72} stroke={6}>
-              <span className="text-base font-bold text-orange-300">{Math.round(atl)}</span>
-            </RadialProgress>
-            <div>
-              <div className="text-xs text-slate-500 uppercase tracking-wider">Fatiga</div>
-              <div className="text-xs text-slate-400">ATL · 7 días</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 ml-auto">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:ml-auto">
             {streak > 1 && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border"
                 style={{ borderColor: '#f59e0b40', background: '#f59e0b10' }}>
@@ -137,7 +137,7 @@ export default function Dashboard() {
                 </div>
               </div>
             )}
-            <div className="text-right">
+            <div className="sm:text-right">
               <div className="text-xs text-slate-500">{stats?.totalActivities ?? activities.length} actividades</div>
               {stats?.syncedAt && (
                 <div className="text-xs text-slate-600">
@@ -148,8 +148,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Fitness sparkline */}
-        <div className="h-20">
+        <div className="h-20 sm:h-24">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={sparkPoints} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
               <defs>
@@ -172,15 +171,14 @@ export default function Dashboard() {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-        <div className="flex gap-4 mt-1">
+
+        <div className="flex flex-wrap gap-4 mt-1">
           <LegendDot color="#3b82f6" label="Fitness (CTL)" />
           <LegendDot color="#f97316" label="Fatiga (ATL)" />
         </div>
       </div>
 
-      {/* ── Body ─────────────────────────────────────────────────────────── */}
-      <div className="px-6 py-5 space-y-5">
-
+      <div className="px-3 sm:px-5 lg:px-6 py-4 sm:py-5 space-y-5">
         <RunnerStatusCard
           tsb={tsb}
           ctl={ctl}
@@ -197,18 +195,17 @@ export default function Dashboard() {
           lastWeekTss={lastWeek.tss}
           isAerobicFocused={isAerobicFocused}
         />
-		
-		<WeeklyCalendarCard activities={activities} />
 
-        {/* Week comparison */}
+        <WeeklyCalendarCard activities={activities} />
+
         <section>
           <SectionHeader left="Esta semana" right="vs semana anterior" />
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
             {[
-              { label: 'Sesiones',    value: week.count,            prev: lastWeek.count,            fmt: (v: number) => String(v),              unit: '' },
-              { label: 'Distancia',   value: week.distance,         prev: lastWeek.distance,         fmt: (v: number) => v.toFixed(1),           unit: 'km' },
-              { label: 'Tiempo',      value: week.duration / 3600,  prev: lastWeek.duration / 3600,  fmt: (v: number) => v.toFixed(1),           unit: 'h' },
-              { label: 'Carga (TSS)', value: week.tss,              prev: lastWeek.tss,              fmt: (v: number) => Math.round(v).toString(), unit: '' },
+              { label: 'Sesiones', value: week.count, prev: lastWeek.count, fmt: (v: number) => String(v), unit: '' },
+              { label: 'Distancia', value: week.distance, prev: lastWeek.distance, fmt: (v: number) => v.toFixed(1), unit: 'km' },
+              { label: 'Tiempo', value: week.duration / 3600, prev: lastWeek.duration / 3600, fmt: (v: number) => v.toFixed(1), unit: 'h' },
+              { label: 'Carga (TSS)', value: week.tss, prev: lastWeek.tss, fmt: (v: number) => Math.round(v).toString(), unit: '' },
             ].map(({ label, value, prev, fmt, unit }) => (
               <div key={label} className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 hover:border-slate-600/60 transition-colors">
                 <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">{label}</div>
@@ -221,16 +218,14 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Sport rings + Zone radar */}
-        <div className="grid grid-cols-2 gap-4">
-
-          <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-5">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 sm:p-5">
             <div className="text-xs text-slate-500 uppercase tracking-wider mb-4">Volumen · últimos 30 días</div>
-            <div className="flex items-center justify-around">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {([
-                { sport: 'running' as const,  label: 'Running',  color: '#ef4444', max: 20 },
-                { sport: 'cycling' as const,  label: 'Ciclismo', color: '#f97316', max: 30 },
-                { sport: 'swimming' as const, label: 'Natación', color: '#3b82f6', max: 8  },
+                { sport: 'running' as const, label: 'Running', color: '#ef4444', max: 20 },
+                { sport: 'cycling' as const, label: 'Ciclismo', color: '#f97316', max: 30 },
+                { sport: 'swimming' as const, label: 'Natación', color: '#3b82f6', max: 8 },
               ]).map(({ sport, label, color, max }) => (
                 <div key={sport} className="flex flex-col items-center gap-2">
                   <RadialProgress value={sportHours[sport].hours} max={max} color={color} size={80} stroke={7}>
@@ -254,7 +249,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-5">
+          <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 sm:p-5">
             <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Zonas FC · 30 días</div>
             <div className="text-xs mb-2" style={{ color: isAerobicFocused ? '#22c55e' : '#eab308' }}>
               {isAerobicFocused ? '✅ Buena base aeróbica (Z1+Z2 >60%)' : '⚠️ Añade más entrenamiento en Z1–Z2'}
@@ -278,8 +273,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Weekly TSS bar chart */}
-        <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-5">
+        <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 sm:p-5">
           <SectionHeader left="Carga semanal (TSS) · 16 semanas" rightLink={{ to: '/fitness', label: 'Ver completo →' }} />
           <div className="flex items-end gap-1 h-20">
             {weeklyLoad.map((w, i) => {
@@ -306,7 +300,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Recent activities */}
         <section>
           <SectionHeader left="Últimas actividades" rightLink={{ to: '/activities', label: 'Ver todas →' }} />
           <div className="space-y-2">
@@ -314,20 +307,22 @@ export default function Dashboard() {
               <Link
                 key={a.id}
                 to={`/activity/${a.id}`}
-                className="flex items-center gap-4 px-4 py-3 rounded-xl border border-slate-700/40 bg-slate-800/30 hover:bg-slate-800/70 hover:border-slate-600/50 transition-all group"
+                className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 px-4 py-3 rounded-xl border border-slate-700/40 bg-slate-800/30 hover:bg-slate-800/70 hover:border-slate-600/50 transition-all group"
               >
-                <div className="w-2 h-2 rounded-full shrink-0"
-                  style={{ background: sportColor(a.sport), boxShadow: `0 0 6px ${sportColor(a.sport)}88` }} />
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="w-2 h-2 rounded-full shrink-0"
+                    style={{ background: sportColor(a.sport), boxShadow: `0 0 6px ${sportColor(a.sport)}88` }} />
 
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-medium text-slate-200 truncate group-hover:text-white">{a.title}</div>
-                  <div className="text-xs text-slate-500">
-                    {daysAgo(a.startTime) === 0 ? 'Hoy' : daysAgo(a.startTime) === 1 ? 'Ayer' : `Hace ${daysAgo(a.startTime)}d`}
-                    {' · '}{sportIcon(a.sport)}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-slate-200 truncate group-hover:text-white">{a.title}</div>
+                    <div className="text-xs text-slate-500">
+                      {daysAgo(a.startTime) === 0 ? 'Hoy' : daysAgo(a.startTime) === 1 ? 'Ayer' : `Hace ${daysAgo(a.startTime)}d`}
+                      {' · '}{sportIcon(a.sport)}
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-5 shrink-0 text-right">
+                <div className="grid grid-cols-3 gap-3 sm:flex sm:items-center sm:gap-5 shrink-0 text-left sm:text-right">
                   {a.distance > 0 && (
                     <div>
                       <div className="text-sm font-bold text-slate-200">
@@ -342,12 +337,11 @@ export default function Dashboard() {
                     {a.avgHR > 0 && <div className="text-xs text-slate-500">{a.avgHR} bpm</div>}
                   </div>
                   {a.tss != null && (
-                    <div className="w-10 text-right">
+                    <div className="sm:w-10 sm:text-right">
                       <div className="text-sm font-bold" style={{ color: sportColor(a.sport) }}>{Math.round(a.tss)}</div>
                       <div className="text-xs text-slate-600">TSS</div>
                     </div>
                   )}
-                  <div className="text-slate-600 group-hover:text-slate-400 text-xs">→</div>
                 </div>
               </Link>
             ))}
@@ -359,8 +353,6 @@ export default function Dashboard() {
     </div>
   )
 }
-
-// ─── Shared layout helpers ────────────────────────────────────────────────────
 
 function LegendDot({ color, label }: { color: string; label: string }) {
   return (
@@ -381,7 +373,7 @@ function SectionHeader({
   rightLink?: { to: string; label: string }
 }) {
   return (
-    <div className="flex items-center justify-between mb-3">
+    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3">
       <div className="text-xs text-slate-500 uppercase tracking-widest">{left}</div>
       {right && <div className="text-xs text-slate-600">{right}</div>}
       {rightLink && (
