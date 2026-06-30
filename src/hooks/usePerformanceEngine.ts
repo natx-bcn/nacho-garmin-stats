@@ -6,7 +6,7 @@ import { buildPerformanceConsistency } from '../lib/performance/consistency'
 import { buildPerformancePredictions } from '../lib/performance/predictions'
 import { buildPerformanceGoals } from '../lib/performance/goals'
 import { buildPerformanceLoad, buildWeeklyLoad } from '../lib/performance/load'
-import { analyzeActivity } from '../lib/activityAnalyzer'
+import { analyzeActivity } from '../lib/athena'
 import { buildWeeklyTrainingSummary } from '../lib/performance/trainingSummary'
 
 export default function usePerformanceEngine() {
