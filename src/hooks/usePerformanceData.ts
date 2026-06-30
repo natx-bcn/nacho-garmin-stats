@@ -180,6 +180,4 @@ export function useConsistencyHeatmap(windowDays = 28): HeatmapData {
   }, [activities, windowDays])
 }
 
-// ─── Weekly TSS load (re-exported from useWeeklyLoad for perf page) ───────────
-export { useWeeklyLoad } from './useWeeklyLoad'
-export type { WeekLoadPoint } from './useWeeklyLoad'
+
