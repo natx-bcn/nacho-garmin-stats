@@ -22,9 +22,10 @@ export default function App() {
 
   return (
     <HashRouter>
-      <div className="flex min-h-screen">
+      <div className="min-h-screen bg-[#080f1e] text-slate-100 lg:flex">
         <Sidebar />
-        <main className="flex-1 overflow-hidden flex flex-col">
+
+        <main className="min-w-0 flex-1 pb-20 lg:pb-0">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/activities" element={<Activities />} />
