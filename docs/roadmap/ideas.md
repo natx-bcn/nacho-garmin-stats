@@ -1,0 +1,23 @@
+# Ideas
+
+- Personal Records.
+- Weekly Insights.
+- Recovery / Readiness.
+- Heatmap anual.
+- Badges.
+- Logros.
+- Comparador de periodos.
+- Objetivos semanales configurables.
+- Objetivos mensuales.
+- Mejor semana.
+- Mejor mes.
+- Predicción de 5K, 10K, media y maratón.
+- Estado de forma más visual.
+- Sync Center.
+- Botón "Actualizar ahora".
+- Evolución de VO2max.
+- Evolución de ritmo medio.
+- Evolución de frecuencia cardíaca media.
+- Panel específico de running.
+- Panel específico de padbol.
+- Panel específico de fuerza.
