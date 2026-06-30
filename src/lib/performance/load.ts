@@ -70,3 +70,51 @@ function getStartOfWeek(date: Date) {
   d.setHours(0, 0, 0, 0)
   return d
 }
+
+
+export type WeekLoadPoint = {
+  week: string
+  tss: number
+  distance: number
+  duration: number
+  sessions: number
+}
+
+export function buildWeeklyLoad(
+  activities: RawActivity[],
+  windowWeeks = 16,
+): WeekLoadPoint[] {
+  const weeks: WeekLoadPoint[] = []
+  const now = new Date()
+  const currentWeekStart = getStartOfWeek(now)
+
+  for (let i = windowWeeks - 1; i >= 0; i--) {
+    const weekStart = new Date(currentWeekStart)
+    weekStart.setDate(currentWeekStart.getDate() - i * 7)
+
+    const weekEnd = new Date(weekStart)
+    weekEnd.setDate(weekStart.getDate() + 7)
+
+    const weekActivities = activities.filter(activity => {
+      const date = new Date(activity.startTime)
+      return date >= weekStart && date < weekEnd
+    })
+
+    weeks.push({
+      week: formatWeekLabel(weekStart),
+      tss: weekActivities.reduce((sum, a) => sum + Number(a.tss || 0), 0),
+      distance: weekActivities.reduce((sum, a) => sum + normalizeDistance(a.distance), 0),
+      duration: weekActivities.reduce((sum, a) => sum + Number(a.duration || 0), 0),
+      sessions: weekActivities.length,
+    })
+  }
+
+  return weeks
+}
+
+function formatWeekLabel(date: Date) {
+  return date.toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'short',
+  })
+}

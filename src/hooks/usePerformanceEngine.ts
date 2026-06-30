@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { useActivityStore } from '../stores/activityStore'
 import { buildPerformanceRecords } from '../lib/performance/records'
-import { buildPerformanceLoad } from '../lib/performance/load'
 import { buildPerformanceTrend } from '../lib/performance/trend'
 import { buildPerformanceConsistency } from '../lib/performance/consistency'
 import { buildPerformancePredictions } from '../lib/performance/predictions'
 import { buildPerformanceGoals } from '../lib/performance/goals'
+import { buildPerformanceLoad, buildWeeklyLoad } from '../lib/performance/load'
 
 export default function usePerformanceEngine() {
   const activities = useActivityStore(s => s.activities)
@@ -17,6 +17,7 @@ export default function usePerformanceEngine() {
 	const consistency = buildPerformanceConsistency(activities)
 	const predictions = buildPerformancePredictions(records)
 	const goals = buildPerformanceGoals(activities)
+	const weeklyLoad = buildWeeklyLoad(activities, 16)
 	
     return {
       activities,
@@ -33,6 +34,7 @@ export default function usePerformanceEngine() {
 	  predictions,
 	  consistency,
 	  goals,
+	  weeklyLoad,
       currentWeek: load.currentWeek,
       previousWeek: load.previousWeek,
       loadRatio: load.ratio,

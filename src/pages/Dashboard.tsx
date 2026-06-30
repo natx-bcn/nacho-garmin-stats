@@ -7,7 +7,7 @@ import { useWeekComparison } from '../hooks/useWeekComparison'
 import { useSportVolume } from '../hooks/useSportVolume'
 import { useTrainingStreak } from '../hooks/useTrainingStreak'
 import { useZoneDistribution } from '../hooks/useZoneDistribution'
-import { useWeeklyLoad } from '../hooks/useWeeklyLoad'
+import usePerformanceEngine from '../hooks/usePerformanceEngine'
 import RadialProgress from '../components/RadialProgress'
 import FormBadge from '../components/FormBadge'
 import DeltaBadge from '../components/DeltaBadge'
@@ -55,7 +55,7 @@ export default function Dashboard() {
   const { bySport: sportHours, totalHours, percentages } = useSportVolume(30)
   const streak = useTrainingStreak()
   const { slices: zoneSlices, isAerobicFocused } = useZoneDistribution(30)
-  const weeklyLoad = useWeeklyLoad(16)
+  const { weeklyLoad } = usePerformanceEngine()
 
   if (loading) return <LoadingScreen />
   if (error || activities.length === 0) return <EmptyScreen />
