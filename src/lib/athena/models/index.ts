@@ -1,2 +1,5 @@
 export * from './AthenaReport'
 export * from './AthenaContext'
+export * from './AthenaStatus'
+export * from './AthenaScores'
+export * from './AthenaAnalysis'
