@@ -1,7 +1,8 @@
 import { evaluateCoach } from './coach'
+import type { AthenaContext } from './models'
 
-export function evaluateAthena(data: Parameters<typeof evaluateCoach>[0]) {
-  const coach = evaluateCoach(data)
+export function evaluateAthena(context: AthenaContext) {
+  const coach = evaluateCoach(context)
 
   return {
     coach,
