@@ -41,3 +41,22 @@ Mejorar el Dashboard con métricas más útiles, mejor jerarquía visual e insig
 - WeeklyInsightsCard.
 - Mejora del gráfico de carga semanal TSS.
 - Revisión responsive móvil.
+
+
+---
+
+## V5.4.0 — Performance Intelligence
+
+Estado: 🚧 En desarrollo
+
+### Objetivo
+
+Rediseñar el Dashboard para convertirlo en un panel más inteligente, visual y motivador.
+
+### Roadmap
+
+- Hero 2.0
+- Weekly Insights
+- Personal Records
+- Dashboard Polish
+- Layout Review
