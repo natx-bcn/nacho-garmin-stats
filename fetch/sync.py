@@ -2,30 +2,12 @@
 
 from __future__ import annotations
 
-"""
-Garmin Connect → local JSON sync script.
-
-Usage:
-  python sync.py
-  python sync.py --limit 20
-  python sync.py --since 2024-01-01
-  python sync.py --limit 30 --no-gpx
-
-Credentials are read from ../.env or environment variables:
-  GARMIN_EMAIL
-  GARMIN_PASSWORD
-
-Output:
-  ../public/data/activities.json
-  ../public/data/stats.json
-  ../public/data/activity_{id}.json
-"""
-
 import argparse
 import json
 import os
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -33,8 +15,15 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 
+DEFAULT_CACHE = {
+    "lastSync": None,
+    "lastActivityId": None,
+    "totalActivities": 0,
+    "version": 1,
+}
+
+
 def get_api():
-    """Authenticate and return a Garmin Connect API client."""
     try:
         import garminconnect
     except ImportError:
@@ -63,24 +52,58 @@ def get_api():
     return api
 
 
-def fetch_activities(api, limit: int | None, since: str | None) -> list:
-    """Download the activity list from Garmin Connect."""
+def load_json(path: Path, default):
+    if not path.exists():
+        return default
+
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"WARNING: Could not read {path}: {e}")
+        return default
+
+
+def save_json(path: Path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
+
+
+def fetch_activities(api, limit: int | None, since: str | None, existing_ids: set[str], full: bool) -> list:
     print("Fetching activity list...")
 
-    if limit:
-        raw = api.get_activities(0, limit)
-    else:
-        raw = []
-        start = 0
-        chunk = 100
+    raw: list = []
+    start = 0
+    chunk = 100
 
+    force_full = full or not existing_ids or len(existing_ids) < 100
+
+    if limit:
+        batch = api.get_activities(0, limit)
+        raw.extend(batch or [])
+    else:
         while True:
             batch = api.get_activities(start, chunk)
+
             if not batch:
                 break
 
             raw.extend(batch)
+
             print(f"Fetched {len(raw)} activities so far...")
+
+            if not force_full:
+                batch_ids = {
+                    str(a.get("activityId") or a.get("id"))
+                    for a in batch
+                    if a.get("activityId") or a.get("id")
+                }
+
+                if batch_ids & existing_ids:
+                    print("Reached already synced activities. Stopping incremental fetch.")
+                    break
 
             if len(batch) < chunk:
                 break
@@ -96,7 +119,6 @@ def fetch_activities(api, limit: int | None, since: str | None) -> list:
 
 
 def _try(fn, *args, label="", **kwargs):
-    """Call fn(*args, **kwargs) with retries."""
     for attempt in range(3):
         try:
             return fn(*args, **kwargs)
@@ -129,7 +151,6 @@ def fetch_activity_splits(api, activity_id: int) -> dict:
 
 
 def fetch_gpx_coords(api, activity_id: int) -> list:
-    """Return [[lat, lon], ...] from GPX download, or [] on failure."""
     import re
     import garminconnect
 
@@ -155,30 +176,7 @@ def fetch_gpx_coords(api, activity_id: int) -> list:
         return []
 
 
-def load_json(path: Path, default):
-    if not path.exists():
-        return default
-
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"WARNING: Could not read {path}: {e}")
-        return default
-
-
-def save_json(path: Path, data):
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
-
-
 def merge_summaries(existing: list, fresh: list) -> list:
-    """
-    Merge previous activities with freshly fetched Garmin activities.
-    Fresh data wins when IDs overlap.
-    """
     merged = {}
 
     for item in existing:
@@ -199,7 +197,6 @@ def merge_summaries(existing: list, fresh: list) -> list:
 
 
 def compute_stats(summaries: list) -> dict:
-    """Compute global stats that don't change per-activity."""
     by_sport = {}
 
     for s in summaries:
@@ -218,29 +215,27 @@ def compute_stats(summaries: list) -> dict:
         "totalActivities": len(summaries),
         "byType": {sport: len(acts) for sport, acts in by_sport.items()},
         "vo2maxHistory": vo2max_history,
-        "syncedAt": __import__("datetime").datetime.now().isoformat(),
+        "syncedAt": datetime.now().isoformat(),
+    }
+
+
+def build_cache(summaries: list) -> dict:
+    latest = summaries[0] if summaries else None
+
+    return {
+        "lastSync": datetime.now().isoformat(),
+        "lastActivityId": latest.get("id") if latest else None,
+        "totalActivities": len(summaries),
+        "version": 1,
     }
 
 
 def main():
     parser = argparse.ArgumentParser(description="Sync Garmin activities to local JSON")
-    parser.add_argument(
-        "--limit",
-        type=int,
-        default=None,
-        help="Max recent activities to sync",
-    )
-    parser.add_argument(
-        "--since",
-        type=str,
-        default=None,
-        help="Only sync activities after this date YYYY-MM-DD",
-    )
-    parser.add_argument(
-        "--no-gpx",
-        action="store_true",
-        help="Skip GPS data download",
-    )
+    parser.add_argument("--limit", type=int, default=None, help="Max recent activities to sync")
+    parser.add_argument("--since", type=str, default=None, help="Only sync activities after this date YYYY-MM-DD")
+    parser.add_argument("--no-gpx", action="store_true", help="Skip GPS data download")
+    parser.add_argument("--full", action="store_true", help="Force full historical sync")
 
     args = parser.parse_args()
 
@@ -249,9 +244,31 @@ def main():
     output_dir = Path(__file__).parent.parent / "public" / "data"
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    activities_path = output_dir / "activities.json"
+    stats_path = output_dir / "stats.json"
+    cache_path = output_dir / "cache.json"
+
+    existing_summaries = load_json(activities_path, [])
+    cache = load_json(cache_path, DEFAULT_CACHE)
+
+    existing_ids = {
+        str(item.get("id"))
+        for item in existing_summaries
+        if item.get("id")
+    }
+
+    print(f"Existing local activities: {len(existing_summaries)}")
+    print(f"Cache: {cache}")
+
     api = get_api()
 
-    raw_activities = fetch_activities(api, args.limit, args.since)
+    raw_activities = fetch_activities(
+        api=api,
+        limit=args.limit,
+        since=args.since,
+        existing_ids=existing_ids,
+        full=args.full,
+    )
 
     fresh_summaries = []
 
@@ -263,17 +280,16 @@ def main():
         except Exception as e:
             print(f"WARNING: Failed to normalize activity {raw.get('activityId')}: {e}")
 
-    existing_summaries = load_json(output_dir / "activities.json", [])
     all_summaries = merge_summaries(existing_summaries, fresh_summaries)
 
-    save_json(output_dir / "activities.json", all_summaries)
+    save_json(activities_path, all_summaries)
 
     print(
         f"Saved {len(all_summaries)} total activity summaries "
-        f"({len(fresh_summaries)} fresh checked) → public/data/activities.json"
+        f"({len(fresh_summaries)} checked) → public/data/activities.json"
     )
 
-    print(f"\nFetching details for {len(fresh_summaries)} recent activities...")
+    print(f"\nFetching details for {len(fresh_summaries)} checked activities...")
 
     for i, summary in enumerate(fresh_summaries):
         activity_id = summary["id"]
@@ -302,11 +318,15 @@ def main():
         time.sleep(0.5)
 
     stats = compute_stats(all_summaries)
-    save_json(output_dir / "stats.json", stats)
+    save_json(stats_path, stats)
+
+    new_cache = build_cache(all_summaries)
+    save_json(cache_path, new_cache)
 
     print("\nDone!")
     print(f"Total historical activities: {len(all_summaries)}")
     print("Saved stats → public/data/stats.json")
+    print("Saved cache → public/data/cache.json")
 
 
 if __name__ == "__main__":
