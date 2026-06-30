@@ -1,3 +1,5 @@
+import type { AthenaContext } from '../models'
+
 export interface RunnerStatusAnalysis {
   title: string
   subtitle: string
@@ -6,10 +8,10 @@ export interface RunnerStatusAnalysis {
 }
 
 export function analyzeRunnerStatus(
-  tsb: number,
-  weekTss: number,
-  lastWeekTss: number,
+  context: AthenaContext,
 ): RunnerStatusAnalysis {
+  const { tsb, weeklyLoad, lastWeekLoad } = context
+
   if (tsb < -25) {
     return {
       title: 'Sobrecarga',
@@ -28,7 +30,7 @@ export function analyzeRunnerStatus(
     }
   }
 
-  if (lastWeekTss > 0 && weekTss > lastWeekTss * 1.3) {
+  if (lastWeekLoad > 0 && weeklyLoad > lastWeekLoad * 1.3) {
     return {
       title: 'Subida de carga',
       subtitle: 'Semana exigente',

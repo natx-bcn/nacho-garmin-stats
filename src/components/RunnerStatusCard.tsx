@@ -15,7 +15,18 @@ export default function RunnerStatusCard({
   weekTss,
   lastWeekTss,
 }: RunnerStatusCardProps) {
-  const status = analyzeRunnerStatus(tsb, weekTss, lastWeekTss)
+  const athenaContext = {
+    ctl,
+    atl,
+    tsb,
+    weeklyLoad: weekTss,
+    lastWeekLoad: lastWeekTss,
+    weekDistance: 0,
+    activitiesThisWeek: 0,
+    isAerobicFocused: false,
+  }
+
+  const status = analyzeRunnerStatus(athenaContext)
   const loadStatus = getLoadStatus(weekTss, lastWeekTss)
   const recovery = getRecovery(tsb, atl)
   const injuryRisk = getInjuryRisk(tsb, weekTss, lastWeekTss)
