@@ -7,6 +7,7 @@ import { buildPerformancePredictions } from '../lib/performance/predictions'
 import { buildPerformanceGoals } from '../lib/performance/goals'
 import { buildPerformanceLoad, buildWeeklyLoad } from '../lib/performance/load'
 import { analyzeActivity } from '../lib/activityAnalyzer'
+import { buildWeeklyTrainingSummary } from '../lib/performance/trainingSummary'
 
 export default function usePerformanceEngine() {
   const activities = useActivityStore(s => s.activities)
@@ -24,6 +25,8 @@ export default function usePerformanceEngine() {
 		  sport: activity.sport,
 		  ...analyzeActivity(activity),
 		}))
+	const weeklyTrainingSummary = buildWeeklyTrainingSummary(activityAnalysis)
+	
 	const goals = buildPerformanceGoals(activities)
 	const weeklyLoad = buildWeeklyLoad(activities, 16)
 	
@@ -44,6 +47,7 @@ export default function usePerformanceEngine() {
 	  goals,
 	  weeklyLoad,
 	  activityAnalysis,
+	  weeklyTrainingSummary,
       currentWeek: load.currentWeek,
       previousWeek: load.previousWeek,
       loadRatio: load.ratio,
