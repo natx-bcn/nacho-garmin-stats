@@ -12,6 +12,7 @@ import {
   X,
 } from 'lucide-react'
 import { useActivityStore } from '../stores/activityStore'
+import { APP_VERSION, APP_VERSION_NAME } from '../config/version'
 
 const NAV = [
   { to: '/', label: 'Dashboard', shortLabel: 'Inicio', Icon: Home },
@@ -36,6 +37,7 @@ export default function Sidebar() {
       <aside className="hidden lg:flex lg:w-56 xl:w-64 shrink-0 bg-slate-900 border-r border-slate-700/50 flex-col min-h-screen sticky top-0">
         <div className="px-5 py-5 border-b border-slate-700/50">
           <div className="text-blue-400 font-bold text-lg tracking-tight">Garmin Stats</div>
+          <div className="mt-0.5 text-[10px] text-slate-600">v{APP_VERSION} · {APP_VERSION_NAME}</div>
           <div className="text-slate-500 text-xs mt-0.5">
             {activities.length > 0 ? `${activities.length} actividades` : 'Sin datos aún'}
           </div>
@@ -93,6 +95,7 @@ export default function Sidebar() {
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <div className="text-blue-400 font-bold text-lg">Garmin Stats</div>
+                <div className="mt-0.5 text-[10px] text-slate-600">v{APP_VERSION} · {APP_VERSION_NAME}</div>
                 <div className="text-xs text-slate-500">
                   {activities.length > 0 ? `${activities.length} actividades` : 'Sin datos aún'}
                 </div>
