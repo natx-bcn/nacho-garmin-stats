@@ -1,258 +1,286 @@
 # Garmin Stats
 
-Panel personal para ver tus estadísticas de entrenamiento de Garmin Connect: actividades, mapas, zonas de FC, fitness (CTL/ATL/TSB), récords y más.
+![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Online-success)
+![Python](https://img.shields.io/badge/Python-3.11+-blue)
+![Node](https://img.shields.io/badge/Node.js-24-green)
+![React](https://img.shields.io/badge/React-19-61DAFB)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-Los datos se descargan de tu cuenta de Garmin a archivos locales en tu ordenador. La app los lee desde ahí; no hay servidor en la nube ni base de datos.
+Dashboard moderno para visualizar y analizar todas tus actividades de **Garmin Connect**.
 
----
-
-## Qué necesitas antes de empezar
-
-Instala estas dos cosas si no las tienes ya:
-
-
-| Programa                      | Para qué sirve            | Cómo comprobarlo                             |
-| ----------------------------- | ------------------------- | -------------------------------------------- |
-| **Node.js** (v18 o superior)  | Ejecutar la app web       | Abre una terminal y escribe `node --version` |
-| **Python** (v3.10 o superior) | Descargar datos de Garmin | Escribe `python3 --version`                  |
-
-
-También necesitas una **cuenta de Garmin Connect** (la misma que usas en la app del móvil o en [connect.garmin.com](https://connect.garmin.com)).
-
-> **¿No tienes Node.js o Python?**
->
-> - Node.js: [https://nodejs.org](https://nodejs.org) → descarga la versión LTS.
-> - Python: [https://python.org/downloads](https://python.org/downloads) → en Mac/Linux suele venir instalado.
+El proyecto descarga automáticamente las actividades desde Garmin, genera un histórico en JSON y publica una web completamente estática mediante **GitHub Pages**.
 
 ---
 
-## Guía paso a paso
+# 🌍 Demo
 
-### 1. Descargar el proyecto
+## Producción
 
-Si ya tienes la carpeta `garmin-stats` en tu ordenador, ábrela en la terminal:
+https://natx-bcn.github.io/nacho-garmin-stats/#/
+
+---
+
+# ✨ Características
+
+- 📊 Dashboard de entrenamiento
+- 🏃 Historial completo de actividades
+- ❤️ Estadísticas de frecuencia cardíaca
+- 🔥 Distribución por zonas
+- 📈 Evolución de fitness
+- ⚡ Análisis de rendimiento
+- 🏅 Récords personales
+- 🗺️ Mapas de actividades
+- 🔄 Sincronización automática diaria
+- 🚀 Publicación automática mediante GitHub Actions
+
+---
+
+# 🛠 Tecnologías
+
+- Python 3.11+
+- React
+- TypeScript
+- Vite
+- Zustand
+- Tailwind CSS
+- GitHub Actions
+- GitHub Pages
+
+---
+
+# 📦 Instalación
+
+Clonar el proyecto
 
 ```bash
-cd ruta/donde/está/garmin-stats
+git clone https://github.com/natx-bcn/nacho-garmin-stats.git
+cd nacho-garmin-stats
 ```
 
-(Sustituye `ruta/donde/está/garmin-stats` por la ruta real, por ejemplo `/Users/tu-usuario/Documents/garmin-stats`.)
-
 ---
 
-### 2. Configurar tus credenciales de Garmin
-
-La app necesita tu email y contraseña de Garmin Connect para descargar tus actividades. **Nunca subas este archivo a internet.**
-
-1. Copia el archivo de ejemplo:
-  ```bash
-   cp .env.example .env
-  ```
-2. Abre `.env` con cualquier editor de texto y rellena tus datos:
-  ```
-   GARMIN_EMAIL=tu@email.com
-   GARMIN_PASSWORD=tu_contraseña
-  ```
-   Usa el mismo email y contraseña con los que entras en Garmin Connect.
-
----
-
-### 3. Instalar dependencias de Python (sincronización)
-
-Entra en la carpeta `fetch` e instala las librerías necesarias:
+## Instalar dependencias Python
 
 ```bash
-cd fetch
-python3 -m pip install -r requirements.txt
-cd ..
+pip install -r fetch/requirements.txt
 ```
-
-> Si `pip` no funciona, prueba con `python3 -m pip install -r requirements.txt` desde la carpeta `fetch`.
 
 ---
 
-### 4. Descargar tus actividades de Garmin
-
-Desde la carpeta raíz del proyecto (`garmin-stats`):
-
-```bash
-python3 fetch/sync.py --limit N
-```
-
-**Qué hace este comando:**
-
-- Inicia sesión en Garmin Connect con tu `.env`
-- Descarga la lista de actividades y los detalles de cada una
-- Guarda todo en `public/data/` (archivos JSON)
-
-La primera vez puede tardar **varios minutos** si tienes muchas actividades. Verás el progreso en la terminal.
-
-**Opciones útiles:**
-
-```bash
-# Solo las 20 actividades más recientes (para probar)
-python3 fetch/sync.py --limit 20
-
-# Solo actividades desde una fecha
-python3 fetch/sync.py --since 2024-01-01
-
-# Más rápido, sin descargar rutas GPS
-python3 fetch/sync.py --no-gpx
-```
-
-> **Importante:** vuelve a ejecutar `python3 fetch/sync.py` cuando quieras actualizar los datos con entrenamientos nuevos. Las actividades ya descargadas no se vuelven a pedir a Garmin.
-
----
-
-### 5. Instalar dependencias de la app web
-
-En la carpeta raíz del proyecto:
+## Instalar dependencias Node
 
 ```bash
 npm install
 ```
 
-Solo hace falta hacerlo **una vez** (o cuando cambien las dependencias del proyecto).
+---
+
+# 🔐 Configuración
+
+Crear un archivo `.env` en la raíz del proyecto.
+
+```env
+GARMIN_EMAIL=tu_email
+GARMIN_PASSWORD=tu_password
+```
+
+También puedes copiar el ejemplo:
+
+```bash
+cp .env.example .env
+```
 
 ---
 
-### 6. Abrir la app
+# 🔄 Sincronizar Garmin
+
+## Descargar únicamente las últimas actividades
+
+```bash
+python fetch/sync.py --limit 30 --no-gpx
+```
+
+---
+
+## Descargar todo el histórico
+
+```bash
+python fetch/sync.py --no-gpx
+```
+
+Todos los datos se guardan automáticamente en
+
+```
+public/data/
+```
+
+---
+
+# 💻 Desarrollo
+
+Arrancar el servidor local
 
 ```bash
 npm run dev
 ```
 
-Verás algo como:
+Abrir
 
 ```
-  ➜  Local:   http://localhost:5173/
+http://localhost:5173/
 ```
-
-Abre ese enlace en el navegador (Chrome, Firefox, Safari…).
-
-Para **cerrar** la app, vuelve a la terminal y pulsa `Ctrl + C`.
 
 ---
 
-## Resumen rápido (cuando ya lo hayas hecho una vez)
-
-Cada vez que quieras usar la app con datos actualizados:
+# 🏗 Build
 
 ```bash
-# 1. Sincronizar datos nuevos de Garmin
-python3 fetch/sync.py
-
-# 2. Arrancar la app
-npm run dev
+npm run build
 ```
 
-Luego abre [http://localhost:5173](http://localhost:5173) en el navegador.
-
----
-
-## Ajustes dentro de la app
-
-En el menú lateral, entra en **Ajustes** para configurar:
-
-- FC máxima
-- FTP (ciclismo)
-- FC y ritmo en umbral (running)
-
-Estos valores se guardan en tu navegador y afectan a los cálculos de zonas, TSS y fitness.
-
----
-
-## Problemas frecuentes
-
-### "ERROR: Set GARMIN_EMAIL and GARMIN_PASSWORD in .env"
-
-No existe el archivo `.env` o está vacío. Repite el **paso 2**.
-
-### "Authentication failed" al sincronizar
-
-- Comprueba que el email y la contraseña en `.env` son correctos.
-- Si tienes verificación en dos pasos (2FA) en Garmin, puede que falle el login automático. Prueba a desactivarla temporalmente o revisa la documentación de la librería `garminconnect`.
-
-### "No se encontró /data/activities.json" en la app
-
-Aún no has sincronizado datos. Ejecuta primero:
-
-```bash
-python3 fetch/sync.py
-```
-
-### La terminal dice que `node` o `npm` no existen
-
-Instala Node.js desde [nodejs.org](https://nodejs.org) y vuelve a abrir la terminal.
-
-### La sincronización va muy lenta
-
-Es normal: hay una pausa entre peticiones para no saturar la API de Garmin. Para una prueba rápida usa `--limit 20` o `--no-gpx`.
-
-### Puerto 5173 ya en uso
-
-Cierra otras ventanas de terminal donde tengas `npm run dev` corriendo, o Vite te propondrá otro puerto (por ejemplo 5174).
-
----
-
-## Comandos extra (opcional)
-
-
-| Comando           | Descripción                                                |
-| ----------------- | ---------------------------------------------------------- |
-| `npm run build`   | Genera una versión optimizada en la carpeta `dist/`        |
-| `npm run preview` | Previsualiza la versión de producción (después de `build`) |
-| `npm run lint`    | Revisa el código con el linter                             |
-
-
----
-
-## Estructura del proyecto (referencia)
+La versión compilada queda en
 
 ```
-garmin-stats/
-├── .env                 ← Tus credenciales (no compartir)
-├── fetch/
-│   ├── sync.py          ← Script que descarga datos de Garmin
-│   └── requirements.txt ← Dependencias de Python
-├── public/data/         ← Datos descargados (JSON)
-└── src/                 ← Código de la app web (React)
+dist/
 ```
 
 ---
 
-## Privacidad y qué NO subir a GitHub
+# ☁️ Despliegue
 
-Estos archivos contienen datos personales o credenciales. El `.gitignore` ya los excluye, pero conviene conocerlos:
+El despliegue es completamente automático mediante **GitHub Actions**.
 
-| Archivo / carpeta | Qué contiene | Riesgo |
-|-------------------|--------------|--------|
-| `.env` | Email y contraseña de Garmin Connect | Acceso total a tu cuenta |
-| `public/data/` | Actividades, estadísticas y rutas GPS | Ubicación exacta, salud, hábitos |
-| `dist/data/` | Copia de los datos al hacer `npm run build` | Igual que arriba |
-| `~/.garth/` (en tu home) | Tokens de sesión de Garmin | Acceso a la API sin contraseña |
+Cada ejecución realiza:
 
-**Datos sensibles dentro de los JSON:**
-- Coordenadas GPS de cada entrenamiento (pueden revelar dónde vives o entrenas)
-- Ciudades en los títulos de actividades
-- FC, VO2max, calorías, ritmos y patrones horarios
+1. Descarga las actividades nuevas de Garmin.
+2. Mantiene el histórico existente.
+3. Genera la aplicación.
+4. Publica automáticamente en GitHub Pages.
 
-**Seguro para publicar:**
-- `.env.example` (solo tiene placeholders)
-- Todo el código en `src/` y `fetch/`
+Workflow:
 
-**Antes de hacer `git push`**, comprueba que no se cuelen datos:
-
-```bash
-git status
+```
+.github/workflows/update-garmin.yml
 ```
 
-No deberían aparecer `.env` ni archivos dentro de `public/data/`. Si alguna vez los añadiste por error:
+---
 
-```bash
-git rm -r --cached public/data/
-git rm --cached .env
+# 🔑 GitHub Secrets
+
+En el repositorio:
+
+```
+Settings
+→ Secrets and variables
+→ Actions
 ```
 
-Luego haz commit de la eliminación. Si ya los subiste a GitHub, **cambia tu contraseña de Garmin** y considera borrar el historial del repositorio.
+Crear los siguientes secrets:
 
+```
+GARMIN_EMAIL
+GARMIN_PASSWORD
+```
+
+---
+
+# 🌐 GitHub Pages
+
+La aplicación se publica automáticamente en
+
+```
+https://natx-bcn.github.io/nacho-garmin-stats/#/
+```
+
+Ejemplos de navegación:
+
+Dashboard
+
+```
+https://natx-bcn.github.io/nacho-garmin-stats/#/
+```
+
+Actividades
+
+```
+https://natx-bcn.github.io/nacho-garmin-stats/#/activities
+```
+
+Fitness
+
+```
+https://natx-bcn.github.io/nacho-garmin-stats/#/fitness
+```
+
+Rendimiento
+
+```
+https://natx-bcn.github.io/nacho-garmin-stats/#/performance
+```
+
+Récords
+
+```
+https://natx-bcn.github.io/nacho-garmin-stats/#/records
+```
+
+---
+
+# 📁 Estructura
+
+```
+fetch/
+    sync.py
+    normalizer.py
+
+public/
+    data/
+
+src/
+    components/
+    hooks/
+    pages/
+    stores/
+    utils/
+
+.github/
+    workflows/
+
+vite.config.ts
+package.json
+```
+
+---
+
+# 🚀 Roadmap
+
+## Fase 1
+
+- ✅ Sincronización incremental
+- ✅ GitHub Pages
+- ✅ GitHub Actions
+- ✅ Historial persistente
+- ✅ Publicación automática
+
+## Próximas mejoras
+
+- 📈 Dashboard avanzado
+- 🧠 Coach inteligente
+- ❤️ Fatiga y recuperación
+- 🏃 Predicción de 5K / 10K / Media
+- 📅 Calendario de entrenamiento
+- 🥇 Evolución de récords
+- 📊 Comparativas mensuales
+- 🗺️ Heatmap mundial
+- 📱 Diseño optimizado para móvil
+
+---
+
+# 📄 Licencia
+
+MIT License
+
+---
+
+Desarrollado a partir del excelente proyecto original de **RafaTatay**, ampliado con nuevas funcionalidades, despliegue automático mediante GitHub Actions y publicación en GitHub Pages.
