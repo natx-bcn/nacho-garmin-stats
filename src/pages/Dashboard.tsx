@@ -16,6 +16,9 @@ import CoachCard from '../components/CoachCard'
 import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
 import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
 import RacePredictionsCard from '../components/RacePredictionsCard'
+import SyncStatusCard from '../components/SyncStatusCard'
+
+
 import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -188,7 +191,9 @@ export default function Dashboard() {
 		  weekTss={week.tss}
 		  lastWeekTss={lastWeek.tss}
 		/>
-
+		
+		<SyncStatusCard />
+		
 		<CoachCard
 		  tsb={tsb}
 		  weekCount={week.count}
