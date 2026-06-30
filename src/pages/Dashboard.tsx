@@ -10,7 +10,6 @@ import { useZoneDistribution } from '../hooks/useZoneDistribution'
 import usePerformanceEngine from '../hooks/usePerformanceEngine'
 import RadialProgress from '../components/RadialProgress'
 import FormBadge from '../components/FormBadge'
-import DeltaBadge from '../components/DeltaBadge'
 import RunnerStatusCard from '../components/RunnerStatusCard'
 import CoachCard from '../components/CoachCard'
 import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
@@ -18,6 +17,8 @@ import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
 import RacePredictionsCard from '../components/RacePredictionsCard'
 import SyncStatusCard from '../components/SyncStatusCard'
 import TrainingSummaryCard from '../components/TrainingSummaryCard'
+import TrendCard from '../components/TrendCard'
+import ConsistencyCard from '../components/ConsistencyCard'
 
 import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
@@ -40,7 +41,7 @@ function EmptyScreen() {
         <div className="bg-slate-900 rounded-lg p-4 font-mono text-xs sm:text-sm text-slate-300 space-y-1 mt-3 overflow-x-auto">
           <div>cp .env.example .env</div>
           <div>cd fetch && pip install -r requirements.txt</div>
-          <div>python3 sync.py --limit 20</div>
+          <div>python3 sync.py --full --no-gpx</div>
         </div>
       </div>
     </div>
@@ -66,7 +67,13 @@ export default function Dashboard() {
   const tsb = fitness?.tsb ?? 0
   const ctl = fitness?.ctl ?? 0
   const atl = fitness?.atl ?? 0
-  const tsbColor = tsb > 10 ? '#22c55e' : tsb > -5 ? '#3b82f6' : tsb > -15 ? '#eab308' : tsb > -25 ? '#f97316' : '#ef4444'
+  const tsbColor =
+    tsb > 10 ? '#22c55e'
+      : tsb > -5 ? '#3b82f6'
+        : tsb > -15 ? '#eab308'
+          : tsb > -25 ? '#f97316'
+            : '#ef4444'
+
   const maxWeekTSS = Math.max(...weeklyLoad.map(w => w.tss), 1)
 
   return (
@@ -185,53 +192,61 @@ export default function Dashboard() {
 
       <div className="px-3 sm:px-5 lg:px-6 py-4 sm:py-5 space-y-5">
         <RunnerStatusCard
-		  tsb={tsb}
-		  ctl={ctl}
-		  atl={atl}
-		  weekTss={week.tss}
-		  lastWeekTss={lastWeek.tss}
-		/>
-		
-		<SyncStatusCard />
-		
-		<CoachCard
-		  tsb={tsb}
-		  weekCount={week.count}
-		  weekDistance={week.distance}
-		  weekTss={week.tss}
-		  lastWeekTss={lastWeek.tss}
-		  isAerobicFocused={isAerobicFocused}
-		/>
+          tsb={tsb}
+          ctl={ctl}
+          atl={atl}
+          weekTss={week.tss}
+          lastWeekTss={lastWeek.tss}
+        />
 
-		<WeeklyGoalsCard />
-		
-		<RacePredictionsCard />
+        <CoachCard
+          tsb={tsb}
+          weekCount={week.count}
+          weekDistance={week.distance}
+          weekTss={week.tss}
+          lastWeekTss={lastWeek.tss}
+          isAerobicFocused={isAerobicFocused}
+        />
 
-		<WeeklyCalendarCard
-		  activities={activities}
-		/>
+        <WeeklyGoalsCard />
 
-		<TrainingSummaryCard />
-		
-        <section>
-          <SectionHeader left="Esta semana" right="vs semana anterior" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-            {[
-              { label: 'Sesiones', value: week.count, prev: lastWeek.count, fmt: (v: number) => String(v), unit: '' },
-              { label: 'Distancia', value: week.distance, prev: lastWeek.distance, fmt: (v: number) => v.toFixed(1), unit: 'km' },
-              { label: 'Tiempo', value: week.duration / 3600, prev: lastWeek.duration / 3600, fmt: (v: number) => v.toFixed(1), unit: 'h' },
-              { label: 'Carga (TSS)', value: week.tss, prev: lastWeek.tss, fmt: (v: number) => Math.round(v).toString(), unit: '' },
-            ].map(({ label, value, prev, fmt, unit }) => (
-              <div key={label} className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 hover:border-slate-600/60 transition-colors">
-                <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">{label}</div>
-                <div className="text-2xl font-bold text-slate-100 mb-1">
-                  {fmt(value)}<span className="text-sm text-slate-500 ml-1">{unit}</span>
+        <RacePredictionsCard />
+
+        <WeeklyCalendarCard activities={activities} />
+
+        <TrainingSummaryCard />
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <TrendCard />
+          <ConsistencyCard />
+        </div>
+
+        <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 sm:p-5">
+          <SectionHeader left="Carga semanal (TSS) · 16 semanas" rightLink={{ to: '/fitness', label: 'Ver completo →' }} />
+          <div className="flex items-end gap-1 h-20">
+            {weeklyLoad.map((w, i) => {
+              const isCurrentWeek = i === weeklyLoad.length - 1
+              return (
+                <div key={w.week} className="flex-1 flex flex-col items-center" title={`${w.week}: ${w.tss} TSS`}>
+                  <div
+                    className="w-full rounded-t transition-all"
+                    style={{
+                      height: `${Math.max((w.tss / maxWeekTSS) * 100, 2)}%`,
+                      background: isCurrentWeek ? 'linear-gradient(to top, #3b82f6, #60a5fa)' : '#334155',
+                      boxShadow: isCurrentWeek ? '0 0 8px #3b82f660' : 'none',
+                    }}
+                  />
                 </div>
-                <DeltaBadge value={value - prev} unit={unit ? ` ${unit}` : ''} />
-              </div>
-            ))}
+              )
+            })}
           </div>
-        </section>
+          <div className="flex justify-between mt-1">
+            <span className="text-xs text-slate-600">{weeklyLoad[0]?.week}</span>
+            <span className="text-xs text-blue-400 font-medium">
+              esta semana {week.tss > 0 ? `${Math.round(week.tss)} TSS` : ''}
+            </span>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 sm:p-5">
@@ -267,7 +282,7 @@ export default function Dashboard() {
           <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 sm:p-5">
             <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Zonas FC · 30 días</div>
             <div className="text-xs mb-2" style={{ color: isAerobicFocused ? '#22c55e' : '#eab308' }}>
-              {isAerobicFocused ? '✅ Buena base aeróbica (Z1+Z2 >60%)' : '⚠️ Añade más entrenamiento en Z1–Z2'}
+              {isAerobicFocused ? '✅ Buena base aeróbica (Z1+Z2 &gt;60%)' : '⚠️ Añade más entrenamiento en Z1–Z2'}
             </div>
             <ResponsiveContainer width="100%" height={180}>
               <RadarChart data={zoneSlices} margin={{ top: 0, right: 20, bottom: 0, left: 20 }}>
@@ -285,33 +300,6 @@ export default function Dashboard() {
                 <span key={z.zone} className="text-xs" style={{ color: z.color }}>{z.zone} {z.pct}%</span>
               ))}
             </div>
-          </div>
-        </div>
-
-        <div className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-4 sm:p-5">
-          <SectionHeader left="Carga semanal (TSS) · 16 semanas" rightLink={{ to: '/fitness', label: 'Ver completo →' }} />
-          <div className="flex items-end gap-1 h-20">
-            {weeklyLoad.map((w, i) => {
-              const isCurrentWeek = i === weeklyLoad.length - 1
-              return (
-                <div key={w.week} className="flex-1 flex flex-col items-center" title={`${w.week}: ${w.tss} TSS`}>
-                  <div
-                    className="w-full rounded-t transition-all"
-                    style={{
-                      height: `${Math.max((w.tss / maxWeekTSS) * 100, 2)}%`,
-                      background: isCurrentWeek ? 'linear-gradient(to top, #3b82f6, #60a5fa)' : '#334155',
-                      boxShadow: isCurrentWeek ? '0 0 8px #3b82f660' : 'none',
-                    }}
-                  />
-                </div>
-              )
-            })}
-          </div>
-          <div className="flex justify-between mt-1">
-            <span className="text-xs text-slate-600">{weeklyLoad[0]?.week}</span>
-            <span className="text-xs text-blue-400 font-medium">
-              esta semana {week.tss > 0 ? `${Math.round(week.tss)} TSS` : ''}
-            </span>
           </div>
         </div>
 
@@ -362,6 +350,8 @@ export default function Dashboard() {
             ))}
           </div>
         </section>
+
+        <SyncStatusCard />
 
         <div className="h-2" />
       </div>
