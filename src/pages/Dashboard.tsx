@@ -15,6 +15,7 @@ import RunnerStatusCard from '../components/RunnerStatusCard'
 import CoachCard from '../components/CoachCard'
 import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
 import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
+import RacePredictionsCard from '../components/RacePredictionsCard'
 import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -198,6 +199,8 @@ export default function Dashboard() {
 		/>
 
 		<WeeklyGoalsCard />
+		
+		<RacePredictionsCard />
 
 		<WeeklyCalendarCard
 		  activities={activities}
