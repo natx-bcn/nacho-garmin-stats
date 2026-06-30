@@ -12,6 +12,7 @@ import RadialProgress from '../components/RadialProgress'
 import FormBadge from '../components/FormBadge'
 import DeltaBadge from '../components/DeltaBadge'
 import RunnerStatusCard from '../components/RunnerStatusCard'
+import CoachCard from '../components/CoachCard'
 import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -185,6 +186,15 @@ export default function Dashboard() {
           atl={atl}
           weekTss={week.tss}
           lastWeekTss={lastWeek.tss}
+        />
+
+        <CoachCard
+          tsb={tsb}
+          weekCount={week.count}
+          weekDistance={week.distance}
+          weekTss={week.tss}
+          lastWeekTss={lastWeek.tss}
+          isAerobicFocused={isAerobicFocused}
         />
 
         {/* Week comparison */}
