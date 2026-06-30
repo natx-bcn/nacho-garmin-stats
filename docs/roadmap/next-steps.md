@@ -1,116 +1,173 @@
 # Next Steps
 
-# V5.4.0 — Performance Intelligence
+# V5.4 — Dashboard PRO ✅
 
-Objetivo:
+## Estado
 
-Transformar el Dashboard actual en un panel mucho más visual, inteligente y motivador, mejorando la jerarquía visual y la experiencia de usuario sin aumentar innecesariamente el número de tarjetas.
+COMPLETADA
+
+## Objetivo alcanzado
+
+Transformar el Dashboard inicial en un panel moderno, visual y profesional, mejorando la jerarquía visual y la experiencia de usuario.
+
+## Funcionalidades implementadas
+
+- [x] Dashboard Hero PRO
+- [x] Runner Status Card
+- [x] Coach Card
+- [x] Weekly Goals
+- [x] Race Predictions
+- [x] Trend Card
+- [x] Consistency Card
+- [x] Weekly Load
+- [x] Sport Volume
+- [x] HR Zones
+- [x] Recent Activities
+- [x] Training Summary
+- [x] Garmin Sync Status
+- [x] Dashboard Header PRO
 
 ---
 
-# Sprint 1 — Hero 2.0 ⭐⭐⭐⭐⭐
+# V5.5 — Intelligent Dashboard 🚧
 
-Objetivo
+## Estado
 
-Convertir el Hero en la pieza central del Dashboard.
+EN DESARROLLO
 
-Tareas
+## Objetivo
 
-- [ ] Mejorar la jerarquía visual.
-- [ ] Destacar mejor el TSB.
-- [ ] Mostrar tendencia respecto al día o semana anterior.
-- [ ] Mejorar indicadores CTL y ATL.
-- [ ] Añadir estado visual (Ready, Productivo, Recuperación...).
+Evolucionar Garmin Stats desde un dashboard de métricas hacia una plataforma de análisis inteligente capaz de interpretar automáticamente los datos del usuario y ofrecer recomendaciones personalizadas.
 
 ---
 
-# Sprint 2 — Weekly Insights ⭐⭐⭐⭐⭐
+# Sprint 1 — Foundation ✅
 
-Nueva tarjeta.
+## Objetivo
 
-Objetivo
+Crear la base visual y arquitectónica para el resto del proyecto.
 
-Generar un resumen automático e inteligente de la semana.
+### Completado
+
+- [x] Design System
+- [x] GlassCard
+- [x] MetricCard
+- [x] DashboardTitle
+- [x] PageHeader
+- [x] Section
+- [x] TrendBadge
+- [x] Framer Motion
+- [x] Motion System
+- [x] Executive Summary Engine (base)
+- [x] Insight Engine (base)
+- [x] Insights Panel integrado en el Dashboard
+
+---
+
+# Sprint 2 — Analysis Engine ⭐⭐⭐⭐⭐
+
+## Objetivo
+
+Centralizar toda la inteligencia del Dashboard en una única capa de análisis.
+
+### Tareas
+
+- [ ] Activity Analyzer
+- [ ] Fitness Analyzer
+- [ ] Trend Analyzer
+- [ ] Dashboard Analysis
+- [ ] Integración con datos reales Garmin
+- [ ] Eliminación de cálculos duplicados del Dashboard
+
+Resultado esperado:
+
+```ts
+const analysis = analyzeDashboard(data)
+```
+
+```ts
+{
+  executiveSummary,
+  insights,
+  recommendations,
+  warnings,
+  achievements,
+  trends
+}
+```
+
+---
+
+# Sprint 3 — Executive Coach ⭐⭐⭐⭐⭐
+
+## Objetivo
+
+Convertir los datos en recomendaciones inteligentes.
+
+### Tareas
+
+- [ ] Executive Summary dinámico
+- [ ] Recomendaciones automáticas
+- [ ] Alertas de fatiga
+- [ ] Detección de mejoras
+- [ ] Detección de riesgos
+- [ ] Interpretación automática del entrenamiento
 
 Ejemplos
 
-- Volumen semanal.
-- Comparación con la semana anterior.
-- Racha.
-- Distribución de zonas.
-- Evolución del Fitness.
-- Recomendación automática.
+- Fitness en aumento
+- Carga excesiva
+- Recuperación insuficiente
+- Semana muy consistente
+- Ritmo mejorando
+- Eficiencia aeróbica en crecimiento
 
 ---
 
-# Sprint 3 — Personal Records ⭐⭐⭐⭐☆
+# Sprint 4 — Dashboard Evolution ⭐⭐⭐⭐☆
 
-Nueva tarjeta.
+## Objetivo
 
-Objetivo
+Mejorar la experiencia visual utilizando el nuevo Design System.
 
-Mostrar las mejores marcas personales del usuario.
+### Tareas
 
-Incluye
-
-- 5K
-- 10K
-- Media maratón
-- Maratón
-- Mayor distancia
-- Mayor desnivel
-- Mayor TSS
+- [ ] Smart Cards
+- [ ] Achievements
+- [ ] Badges
+- [ ] Skeleton Loading
+- [ ] Empty States
+- [ ] Dashboard personalizable
+- [ ] Widgets configurables
 
 ---
 
-# Sprint 4 — Dashboard Polish ⭐⭐⭐⭐☆
+# Sprint 5 — AI Coach ⭐⭐⭐⭐⭐
 
-Objetivo
+## Objetivo
 
-Mejorar componentes existentes.
+Crear un asistente inteligente de entrenamiento.
 
-Tareas
+### Funcionalidades
 
-- [ ] Mejorar Weekly Load.
-- [ ] Mejorar Trend Card.
-- [ ] Mejorar Consistency Card.
-- [ ] Mejorar Recent Activities.
-- [ ] Mejorar Sport Volume.
-- [ ] Mejorar HR Zones.
-
----
-
-# Sprint 5 — Layout Review ⭐⭐⭐⭐⭐
-
-Objetivo
-
-Reordenar el Dashboard.
-
-Nuevo orden previsto
-
-1. Hero
-2. Weekly Insights
-3. Runner Status + Coach (fusionados)
-4. Personal Records
-5. Weekly Goals
-6. Weekly Calendar
-7. Training Summary
-8. Trend
-9. Consistency
-10. Weekly Load
-11. Sport Volume
-12. HR Zones
-13. Recent Activities
-14. Sync
+- [ ] Explicar métricas automáticamente
+- [ ] Analizar entrenamientos
+- [ ] Detectar patrones
+- [ ] Recomendar entrenamientos
+- [ ] Predecir rendimiento
+- [ ] Objetivos personalizados
 
 ---
 
-# Ideas futuras (V5.5+)
+# Ideas futuras (V5.6+)
 
-- Heatmap tipo GitHub.
-- Achievements.
-- Badges.
-- Recovery Score.
-- Readiness Score.
-- Widgets configurables.
-- Dashboard personalizable.
+- Heatmap tipo GitHub
+- AI Coach conversacional
+- Predicción de marca en carrera
+- Comparativa mensual y anual
+- Planificador inteligente de entrenamientos
+- Sincronización manual desde la web
+- Centro de sincronización (Sync Center)
+- Informes PDF automáticos
+- Exportación avanzada de estadísticas
+- Dashboard completamente configurable
