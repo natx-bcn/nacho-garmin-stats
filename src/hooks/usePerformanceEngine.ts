@@ -4,6 +4,7 @@ import { buildPerformanceRecords } from '../lib/performance/records'
 import { buildPerformanceLoad } from '../lib/performance/load'
 import { buildPerformanceTrend } from '../lib/performance/trend'
 import { buildPerformanceConsistency } from '../lib/performance/consistency'
+import { buildPerformancePredictions } from '../lib/performance/predictions'
 
 export default function usePerformanceEngine() {
   const activities = useActivityStore(s => s.activities)
@@ -13,7 +14,8 @@ export default function usePerformanceEngine() {
     const load = buildPerformanceLoad(activities)
 	const trend = buildPerformanceTrend(activities)
 	const consistency = buildPerformanceConsistency(activities)
-
+	const predictions = buildPerformancePredictions(records)
+	
     return {
       activities,
       totalActivities: activities.length,
@@ -26,6 +28,7 @@ export default function usePerformanceEngine() {
 
       load,
 	  trend,
+	  predictions,
 	  consistency,
       currentWeek: load.currentWeek,
       previousWeek: load.previousWeek,
