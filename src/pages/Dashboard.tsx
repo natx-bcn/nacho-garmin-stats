@@ -14,6 +14,7 @@ import DeltaBadge from '../components/DeltaBadge'
 import RunnerStatusCard from '../components/RunnerStatusCard'
 import CoachCard from '../components/CoachCard'
 import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
+import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
 import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -180,23 +181,27 @@ export default function Dashboard() {
 
       <div className="px-3 sm:px-5 lg:px-6 py-4 sm:py-5 space-y-5">
         <RunnerStatusCard
-          tsb={tsb}
-          ctl={ctl}
-          atl={atl}
-          weekTss={week.tss}
-          lastWeekTss={lastWeek.tss}
-        />
+		  tsb={tsb}
+		  ctl={ctl}
+		  atl={atl}
+		  weekTss={week.tss}
+		  lastWeekTss={lastWeek.tss}
+		/>
 
-        <CoachCard
-          tsb={tsb}
-          weekCount={week.count}
-          weekDistance={week.distance}
-          weekTss={week.tss}
-          lastWeekTss={lastWeek.tss}
-          isAerobicFocused={isAerobicFocused}
-        />
+		<CoachCard
+		  tsb={tsb}
+		  weekCount={week.count}
+		  weekDistance={week.distance}
+		  weekTss={week.tss}
+		  lastWeekTss={lastWeek.tss}
+		  isAerobicFocused={isAerobicFocused}
+		/>
 
-        <WeeklyCalendarCard activities={activities} />
+		<WeeklyGoalsCard />
+
+		<WeeklyCalendarCard
+		  activities={activities}
+		/>
 
         <section>
           <SectionHeader left="Esta semana" right="vs semana anterior" />
