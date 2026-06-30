@@ -3,12 +3,12 @@ import { useActivityStore } from '../stores/activityStore'
 import type { Sport } from '../types/garmin'
 import ActivityCard from '../components/ActivityCard'
 
-const SPORTS: { value: Sport | 'all'; label: string }[] = [
-  { value: 'all', label: 'Todos' },
-  { value: 'running', label: '🏃 Running' },
-  { value: 'cycling', label: '🚴 Ciclismo' },
-  { value: 'swimming', label: '🏊 Natación' },
-  { value: 'other', label: '⚡ Otro' },
+const SPORTS: { value: Sport | 'all'; label: string; shortLabel: string }[] = [
+  { value: 'all', label: 'Todos', shortLabel: 'Todos' },
+  { value: 'running', label: '🏃 Running', shortLabel: '🏃 Run' },
+  { value: 'cycling', label: '🚴 Ciclismo', shortLabel: '🚴 Bici' },
+  { value: 'swimming', label: '🏊 Natación', shortLabel: '🏊 Swim' },
+  { value: 'other', label: '⚡ Otro', shortLabel: '⚡ Otro' },
 ]
 
 export default function Activities() {
@@ -36,43 +36,48 @@ export default function Activities() {
   const hasMore = paginated.length < filtered.length
 
   return (
-    <div className="flex-1 p-6 overflow-y-auto">
-      <h1 className="text-xl font-bold text-slate-100 mb-4">Actividades</h1>
-
-      {/* Filters */}
-      <div className="flex gap-3 mb-6 flex-wrap">
-        <div className="flex bg-slate-800 rounded-lg p-0.5 gap-0.5">
-          {SPORTS.map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => { setSportFilter(value); setPage(0) }}
-              className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
-                sportFilter === value
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+    <div className="min-w-0 flex-1 overflow-y-auto bg-[#080f1e] px-3 py-4 sm:px-5 sm:py-6 lg:px-6">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="text-xs text-slate-500 uppercase tracking-widest mb-1">
+            Historial
+          </div>
+          <h1 className="text-2xl font-black text-slate-100">Actividades</h1>
+          <div className="mt-1 text-sm text-slate-500">
+            {filtered.length} actividades encontradas
+          </div>
         </div>
 
         <select
           value={yearFilter}
           onChange={e => { setYearFilter(e.target.value); setPage(0) }}
-          className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-300"
+          className="w-full sm:w-auto bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300"
         >
           {years.map(y => (
             <option key={y} value={y}>{y === 'all' ? 'Todos los años' : y}</option>
           ))}
         </select>
+      </div>
 
-        <div className="text-sm text-slate-500 self-center">
-          {filtered.length} actividades
+      <div className="mb-5 overflow-x-auto pb-1">
+        <div className="inline-flex min-w-max bg-slate-800 rounded-xl p-1 gap-1">
+          {SPORTS.map(({ value, label, shortLabel }) => (
+            <button
+              key={value}
+              onClick={() => { setSportFilter(value); setPage(0) }}
+              className={`px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${
+                sportFilter === value
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <span className="sm:hidden">{shortLabel}</span>
+              <span className="hidden sm:inline">{label}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* List */}
       <div className="space-y-3">
         {paginated.map(a => (
           <ActivityCard key={a.id} activity={a} />
