@@ -1,27 +1,16 @@
 import Card from './ui/Card'
 import Badge from './ui/Badge'
-import useRacePredictions from '../hooks/useRacePredictions'
+import usePerformanceEngine from '../hooks/usePerformanceEngine'
 
 export default function RacePredictionsCard() {
-  const predictions = useRacePredictions()
+  const { predictions } = usePerformanceEngine()
 
-  if (predictions.length === 0) {
-    return (
-      <Card>
-        <div className="text-xs uppercase tracking-[0.25em] text-slate-500">
-          Predicción
-        </div>
-
-        <h2 className="mt-1 text-2xl font-black text-slate-100">
-          Marcas estimadas
-        </h2>
-
-        <p className="mt-4 text-sm text-slate-400">
-          Aún no hay suficientes actividades de running para calcular predicciones.
-        </p>
-      </Card>
-    )
-  }
+  const items = [
+    predictions.fiveK,
+    predictions.tenK,
+    predictions.half,
+    predictions.marathon,
+  ]
 
   return (
     <Card>
@@ -36,33 +25,62 @@ export default function RacePredictionsCard() {
           </h2>
         </div>
 
-        <Badge color="blue">Beta</Badge>
+        <Badge color="blue">Engine</Badge>
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {predictions.map((prediction) => (
+        {items.map((prediction) => (
           <div
             key={prediction.label}
             className="rounded-xl border border-slate-700/40 bg-slate-950/35 p-4"
           >
-            <div className="text-xs uppercase tracking-wider text-slate-500">
-              {prediction.label}
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-xs uppercase tracking-wider text-slate-500">
+                {prediction.label}
+              </div>
+
+              <div className="text-xs font-bold text-blue-300">
+                {prediction.confidence}%
+              </div>
             </div>
 
             <div className="mt-2 text-3xl font-black text-blue-400">
               {prediction.predictedTime}
             </div>
 
-            <div className="mt-2 text-xs text-slate-500">
-              Confianza: {prediction.confidence}
+            {prediction.marginSeconds > 0 && (
+              <div className="mt-1 text-xs text-slate-500">
+                ± {formatMargin(prediction.marginSeconds)}
+              </div>
+            )}
+
+            <div className="mt-3 text-xs text-slate-500">
+              Confianza: {prediction.confidenceLabel}
             </div>
 
             <div className="mt-3 text-xs leading-relaxed text-slate-500">
-              Basado en: {prediction.source}
+              {prediction.sourceLabel}
+              {prediction.sourceTitle && (
+                <>
+                  <br />
+                  {prediction.sourceTitle}
+                </>
+              )}
             </div>
           </div>
         ))}
       </div>
     </Card>
   )
+}
+
+function formatMargin(seconds: number) {
+  if (seconds < 60) {
+    return `${seconds}s`
+  }
+
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+
+  return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`
 }
