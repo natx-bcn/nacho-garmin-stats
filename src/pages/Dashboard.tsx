@@ -21,7 +21,7 @@ import TrainingSummaryCard from '../components/TrainingSummaryCard'
 import TrendCard from '../components/TrendCard'
 import ConsistencyCard from '../components/ConsistencyCard'
 import InsightsPanel from '../components/dashboard/InsightsPanel'
-import { generateInsights } from '../lib/analysis/insightEngine'
+import { generateInsights } from '../lib/athena'
 
 import {
   ResponsiveContainer,
