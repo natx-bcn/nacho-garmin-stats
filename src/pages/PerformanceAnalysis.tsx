@@ -6,7 +6,7 @@ import {
   useVo2maxTrend,
   useConsistencyHeatmap,
 } from '../hooks/usePerformanceData'
-import { useWeeklyLoad } from '../hooks/useWeeklyLoad'
+import usePerformanceEngine from '../hooks/usePerformanceEngine'
 import { useActivityStore } from '../stores/activityStore'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -48,7 +48,7 @@ export default function PerformanceAnalysis() {
   const balance = useTriathlonBalance(21)
   const cadenceData = useCadenceData()
   const { points: vo2Points, current: currentVo2 } = useVo2maxTrend()
-  const weeklyLoad = useWeeklyLoad(16)
+  const { weeklyLoad } = usePerformanceEngine()
   const heatmap = useConsistencyHeatmap(28)
 
   const avgWeeklyTSS = weeklyLoad.length
@@ -215,13 +215,14 @@ export default function PerformanceAnalysis() {
                   label={{ value: 'media', fill: '#64748b', fontSize: 9 }} />
                 <Bar dataKey="tss" radius={[3, 3, 0, 0]}>
                   {weeklyLoad.map((w, i) => (
-                    <Cell key={i} fill={RAMP_COLOR[w.riskLevel]} />
+                    <Cell key={i} fill={RAMP_COLOR[getRiskLevel(w.tss, i, weeklyLoad)]} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <Empty label="Sin datos suficientes" />
+			
           )}
         </Section>
 
@@ -278,6 +279,25 @@ function Empty({ label }: { label: string }) {
   return <div className="h-48 flex items-center justify-center text-slate-600 text-sm">{label}</div>
 }
 
+function getRiskLevel(
+  tss: number,
+  index: number,
+  weeklyLoad: Array<{ tss: number }>,
+) {
+  if (index === 0) return 'ok'
+
+  const previous = weeklyLoad[index - 1]?.tss ?? 0
+
+  if (previous <= 0) return 'ok'
+
+  const ramp = (tss - previous) / previous
+
+  if (ramp > 0.15) return 'high'
+  if (ramp > 0.08) return 'warn'
+
+  return 'ok'
+}
+
 function deriveInsights({
   balance,
   efTrend,
@@ -287,7 +307,14 @@ function deriveInsights({
 }: {
   balance: ReturnType<typeof useTriathlonBalance>
   efTrend: number | null
-  weeklyLoad: ReturnType<typeof useWeeklyLoad>
+  weeklyLoad: Array<{
+	  week: string
+	  tss: number
+	  distance: number
+	  duration: number
+	  sessions: number
+	  riskLevel?: string
+	}>
   heatmap: ReturnType<typeof useConsistencyHeatmap>
   cadenceData: ReturnType<typeof useCadenceData>
 }): { text: string; color: string }[] {
