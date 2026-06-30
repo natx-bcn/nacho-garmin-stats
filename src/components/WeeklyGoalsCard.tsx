@@ -1,8 +1,10 @@
 import Card from './ui/Card'
 import useWeeklyGoals from '../hooks/useWeeklyGoals'
+import useWeeklyRecommendations from '../hooks/useWeeklyRecommendations'
 
 export default function WeeklyGoalsCard() {
   const goals = useWeeklyGoals()
+  const recommendations = useWeeklyRecommendations()
 
   const items = [
     {
@@ -140,6 +142,47 @@ export default function WeeklyGoalsCard() {
         })}
 
       </div>
+
+	  <div className="mt-8 border-t border-slate-700 pt-5">
+
+		  <div className="text-xs uppercase tracking-[0.25em] text-slate-500 mb-4">
+
+			Recomendaciones
+
+		  </div>
+
+		  <div className="space-y-3">
+
+			{recommendations.map((r) => (
+
+			  <div
+				key={r.text}
+				className="flex gap-3 items-start"
+			  >
+
+				<div
+				  className={`mt-1 h-2.5 w-2.5 rounded-full ${
+					r.type === 'success'
+					  ? 'bg-green-400'
+					  : r.type === 'warning'
+					  ? 'bg-yellow-400'
+					  : 'bg-blue-400'
+				  }`}
+				/>
+
+				<div className="text-sm text-slate-300">
+
+				  {r.text}
+
+				</div>
+
+			  </div>
+
+			))}
+
+		  </div>
+
+		</div>
 
     </Card>
   )
