@@ -18,7 +18,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
   actions: read
@@ -62,23 +62,11 @@ jobs:
           FULL_SYNC: ${{ github.event.inputs.full_sync }}
         run: |
           if [ "$FULL_SYNC" = "true" ]; then
+            echo "Running FULL Garmin sync"
             python fetch/sync.py --full --no-gpx
           else
+            echo "Running incremental Garmin sync"
             python fetch/sync.py --no-gpx
-          fi
-
-      - name: Commit updated Garmin data
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
-          git add public/data
-
-          if git diff --cached --quiet; then
-            echo "No Garmin data changes to commit."
-          else
-            git commit -m "Update Garmin data [skip ci]"
-            git push
           fi
 
       - name: Setup Node.js
