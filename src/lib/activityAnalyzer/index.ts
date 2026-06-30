@@ -1,6 +1,8 @@
 import { classifyTraining } from './classifyTraining'
 import { calculateIntensity } from './calculateIntensity'
 import type { ActivityAnalysis, TrainingEffect, RaceFocus, ActivityTag } from './types'
+import { calculateFatigue } from './calculateFatigue'
+import { calculateRecovery } from './calculateRecovery'
 
 type RawActivity = {
   sport: string
@@ -15,6 +17,19 @@ type RawActivity = {
 export function analyzeActivity(activity: RawActivity): ActivityAnalysis {
   const trainingType = classifyTraining(activity)
   const intensityScore = calculateIntensity(activity)
+
+	const fatigueScore = calculateFatigue({
+	  trainingType,
+	  intensityScore,
+	  duration: activity.duration,
+	  tss: activity.tss,
+	})
+
+	const recoveryHours = calculateRecovery({
+	  trainingType,
+	  fatigueScore,
+	  intensityScore,
+	})
 
   const trainingEffect: TrainingEffect =
     trainingType === 'intervals' || trainingType === 'vo2max'
@@ -49,8 +64,8 @@ export function analyzeActivity(activity: RawActivity): ActivityAnalysis {
     trainingType,
     trainingEffect,
     intensityScore,
-    fatigueScore: Math.min(100, Math.round(intensityScore * 0.75)),
-    recoveryHours: Math.max(8, Math.round(intensityScore * 0.5)),
+    fatigueScore,
+	recoveryHours,
     qualityScore: tags.includes('quality') ? intensityScore : 0,
     raceFocus,
     tags,
