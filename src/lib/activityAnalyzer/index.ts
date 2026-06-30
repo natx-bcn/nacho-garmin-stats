@@ -1,8 +1,10 @@
 import { classifyTraining } from './classifyTraining'
 import { calculateIntensity } from './calculateIntensity'
-import type { ActivityAnalysis, TrainingEffect, RaceFocus, ActivityTag } from './types'
+import type { ActivityAnalysis, TrainingEffect } from './types'
 import { calculateFatigue } from './calculateFatigue'
 import { calculateRecovery } from './calculateRecovery'
+import { buildTags } from './buildTags'
+import { detectRaceFocus } from './detectRaceFocus'
 
 type RawActivity = {
   sport: string
@@ -38,16 +40,8 @@ export function analyzeActivity(activity: RawActivity): ActivityAnalysis {
         ? 'mixed'
         : 'aerobic'
 
-  const raceFocus: RaceFocus =
-    trainingType === 'vo2max' || trainingType === 'intervals'
-      ? '5K'
-      : trainingType === 'tempo' || trainingType === 'threshold'
-        ? '10K'
-        : trainingType === 'long'
-          ? '21K'
-          : 'General'
-
-  const tags: ActivityTag[] = []
+  const raceFocus = detectRaceFocus(trainingType)
+  const tags = buildTags(trainingType)
 
   if (trainingType === 'easy') tags.push('easy')
   if (trainingType === 'recovery') tags.push('recovery')
