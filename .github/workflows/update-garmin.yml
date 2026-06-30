@@ -4,12 +4,21 @@ on:
   schedule:
     - cron: "0 5 * * *"
   workflow_dispatch:
+    inputs:
+      full_sync:
+        description: "Hacer sincronización completa"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
   push:
     branches:
       - main
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
   actions: read
@@ -50,7 +59,27 @@ jobs:
         env:
           GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
-        run: python fetch/sync.py --limit 30 --no-gpx
+          FULL_SYNC: ${{ github.event.inputs.full_sync }}
+        run: |
+          if [ "$FULL_SYNC" = "true" ]; then
+            python fetch/sync.py --full --no-gpx
+          else
+            python fetch/sync.py --no-gpx
+          fi
+
+      - name: Commit updated Garmin data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add public/data
+
+          if git diff --cached --quiet; then
+            echo "No Garmin data changes to commit."
+          else
+            git commit -m "Update Garmin data [skip ci]"
+            git push
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
