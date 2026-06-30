@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   Activity,
@@ -6,7 +7,9 @@ import {
   Flame,
   Gauge,
   Home,
+  Menu,
   Settings,
+  X,
 } from 'lucide-react'
 import { useActivityStore } from '../stores/activityStore'
 
@@ -20,7 +23,11 @@ const NAV = [
   { to: '/settings', label: 'Ajustes', shortLabel: 'Ajustes', Icon: Settings },
 ]
 
+const MOBILE_MAIN = [NAV[0], NAV[1], NAV[2], NAV[5]]
+const MOBILE_MORE = [NAV[3], NAV[4], NAV[6]]
+
 export default function Sidebar() {
+  const [menuOpen, setMenuOpen] = useState(false)
   const stats = useActivityStore(s => s.stats)
   const activities = useActivityStore(s => s.activities)
 
@@ -56,11 +63,13 @@ export default function Sidebar() {
 
         {stats && (
           <div className="px-5 py-4 border-t border-slate-700/50">
-            <div className="text-xs text-slate-500">
-              Última sync
-            </div>
+            <div className="text-xs text-slate-500">Última sync</div>
             <div className="text-xs text-slate-400 mt-0.5">
-              {new Date(stats.syncedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+              {new Date(stats.syncedAt).toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              })}
             </div>
             <div className="mt-3 text-xs text-slate-600 leading-relaxed">
               Auto-sync GitHub Actions
@@ -69,9 +78,75 @@ export default function Sidebar() {
         )}
       </aside>
 
+      {menuOpen && (
+        <div className="lg:hidden fixed inset-0 z-[60]">
+          <button
+            type="button"
+            aria-label="Cerrar menú"
+            onClick={() => setMenuOpen(false)}
+            className="absolute inset-0 bg-black/55 backdrop-blur-sm"
+          />
+
+          <div className="absolute bottom-0 left-0 right-0 rounded-t-3xl border-t border-slate-700/70 bg-slate-950 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl">
+            <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-slate-700" />
+
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <div className="text-blue-400 font-bold text-lg">Garmin Stats</div>
+                <div className="text-xs text-slate-500">
+                  {activities.length > 0 ? `${activities.length} actividades` : 'Sin datos aún'}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                aria-label="Cerrar"
+                onClick={() => setMenuOpen(false)}
+                className="rounded-xl border border-slate-700 bg-slate-900 p-2 text-slate-400 hover:text-slate-200"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid gap-2">
+              {MOBILE_MORE.map(({ to, label, Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm transition-colors ${
+                      isActive
+                        ? 'border-blue-500/40 bg-blue-600/20 text-blue-300'
+                        : 'border-slate-700/50 bg-slate-900/70 text-slate-300 hover:border-slate-500'
+                    }`
+                  }
+                >
+                  <Icon className="h-5 w-5" strokeWidth={2.2} />
+                  <span className="font-medium">{label}</span>
+                </NavLink>
+              ))}
+            </div>
+
+            {stats && (
+              <div className="mt-4 rounded-2xl border border-slate-700/50 bg-slate-900/60 p-4">
+                <div className="text-xs text-slate-500">Última sync</div>
+                <div className="text-xs text-slate-400 mt-0.5">
+                  {new Date(stats.syncedAt).toLocaleDateString('es-ES', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-slate-700/70 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/80">
         <div className="grid grid-cols-5 gap-1 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
-          {NAV.slice(0, 5).map(({ to, shortLabel, Icon }) => (
+          {MOBILE_MAIN.map(({ to, shortLabel, Icon }) => (
             <NavLink
               key={to}
               to={to}
@@ -88,6 +163,19 @@ export default function Sidebar() {
               <span className="truncate leading-none">{shortLabel}</span>
             </NavLink>
           ))}
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[11px] transition-colors ${
+              menuOpen
+                ? 'bg-blue-600/20 text-blue-300'
+                : 'text-slate-500 hover:text-slate-200'
+            }`}
+          >
+            <Menu className="h-5 w-5" strokeWidth={2.2} />
+            <span className="truncate leading-none">Menú</span>
+          </button>
         </div>
       </nav>
     </>
