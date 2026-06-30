@@ -1,16 +1,17 @@
-export interface AthenaScore {
-  value: number
-  level: 'Poor' | 'Fair' | 'Good' | 'Excellent'
-}
+import type { AthenaAnalysis } from './AthenaAnalysis'
+import type { AthenaScores } from './AthenaScores'
+import type { AthenaStatus } from './AthenaStatus'
 
 export interface AthenaReport {
+  status: AthenaStatus
+
+  scores: AthenaScores
+
+  analysis: AthenaAnalysis
+
   coach: ReturnType<typeof import('../coach').evaluateCoach>
 
-  trainingScore: AthenaScore
+  insights: string[]
 
-  readinessScore: AthenaScore
-
-  consistencyScore: AthenaScore
-
-  recoveryScore: AthenaScore
+  predictions: string[]
 }
