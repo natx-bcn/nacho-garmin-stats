@@ -5,11 +5,7 @@ import {
   Tooltip,
   XAxis,
 } from 'recharts'
-import { RefreshCw, ShieldCheck, Sparkles } from 'lucide-react'
 
-import heroBg from '../../assets/athena-hero.jpg'
-import Logo from './Logo'
-import FormBadge from '../FormBadge'
 import type { AthenaReport } from '../../lib/athena/models'
 
 interface HeroSectionProps {
@@ -32,8 +28,69 @@ interface HeroSectionProps {
   sparkPoints: Array<Record<string, unknown>>
 }
 
+function formatHeroDate(): string {
+  return new Intl.DateTimeFormat('es-ES', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+    .format(new Date())
+    .replace(/^./, (char) => char.toUpperCase())
+}
+
+function FormBadge({ tsb }: { tsb: number }) {
+  if (tsb > 8) {
+    return (
+      <span className="rounded-full border border-green-400/30 bg-green-400/10 px-3 py-1 text-xs font-bold text-green-300">
+        Fresco
+      </span>
+    )
+  }
+
+  if (tsb < -12) {
+    return (
+      <span className="rounded-full border border-red-400/30 bg-red-400/10 px-3 py-1 text-xs font-bold text-red-300">
+        Fatiga alta
+      </span>
+    )
+  }
+
+  if (tsb < -5) {
+    return (
+      <span className="rounded-full border border-yellow-400/30 bg-yellow-400/10 px-3 py-1 text-xs font-bold text-yellow-300">
+        Carga
+      </span>
+    )
+  }
+
+  return (
+    <span className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-bold text-cyan-300">
+      Equilibrado
+    </span>
+  )
+}
+
+function Mini({
+  label,
+  value,
+}: {
+  label: string
+  value: string | number
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
+        {label}
+      </p>
+      <p className="mt-1 text-lg font-black text-white">{value}</p>
+    </div>
+  )
+}
+
 export default function HeroSection({
   athena,
+  week,
+  lastWeek,
   ctl,
   atl,
   tsb,
@@ -41,45 +98,21 @@ export default function HeroSection({
   lastSync,
   sparkPoints,
 }: HeroSectionProps) {
-  const readiness = athena.status.readiness
+  const {
+    readiness,
+    recovery,
+    fatigue,
+    risk,
+    trend,
+    explanation,
+  } = athena.analysis
 
   return (
-    <section className="relative min-h-[330px] overflow-hidden rounded-[2rem] border border-cyan-500/20 bg-[#081321] shadow-2xl shadow-cyan-950/20">
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-70"
-        style={{ backgroundImage: `url(${heroBg})` }}
-      />
+    <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-cyan-950/20 xl:p-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.22),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(147,51,234,0.2),transparent_35%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950/40 via-slate-950/85 to-slate-950" />
 
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20" />
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/35" />
-
-      <div className="relative z-10 p-6 lg:p-7">
-        <div className="mb-9 flex items-start justify-between gap-6">
-          <Logo />
-
-          <div className="flex flex-col items-end gap-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-cyan-100">
-              <Sparkles size={14} />
-              V6 Athena Home
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-                <ShieldCheck size={14} />
-                Synced
-              </span>
-
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
-                Sync: {lastSync}
-              </span>
-
-              <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-white/5 text-slate-300">
-                <RefreshCw size={14} />
-              </span>
-            </div>
-          </div>
-        </div>
-
+      <div className="relative">
         <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr] xl:items-end">
           <div>
             <h1 className="text-4xl font-black tracking-tight text-white xl:text-5xl">
@@ -87,21 +120,21 @@ export default function HeroSection({
             </h1>
 
             <p className="mt-1.5 text-base text-slate-300">
-                {new Intl.DateTimeFormat('es-ES', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                })
-                    .format(new Date())
-                    .replace(/^./, (char) => char.toUpperCase())}
+              {formatHeroDate()}
             </p>
 
             <div className="mt-6">
-              <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-300">
-                Athena Ready
-              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-cyan-300">
+                  Athena Intelligence
+                </span>
 
-              <div className="mt-1.5 flex items-end gap-2">
+                <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                  Confidence {explanation.summary}
+                </span>
+              </div>
+
+              <div className="mt-3 flex items-end gap-2">
                 <span className="text-6xl font-black leading-none text-cyan-300 drop-shadow-[0_0_30px_rgba(34,211,238,0.45)]">
                   {readiness.score}
                 </span>
@@ -111,10 +144,29 @@ export default function HeroSection({
               </div>
 
               <p className="mt-2 max-w-xl text-base text-slate-100">
-                {readiness.reason}
+                {explanation.summary}
               </p>
 
-              <div className="mt-2.5 h-1.5 w-52 overflow-hidden rounded-full bg-slate-700">
+              <div className="mt-4 space-y-2">
+                {explanation.reasons.map((reason) => (
+                  <div
+                    key={reason}
+                    className="flex items-center gap-2 text-sm text-slate-300"
+                  >
+                    <span className="text-cyan-400">✓</span>
+                    <span>{reason}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-4">
+                <Mini label="Recovery" value={recovery.score} />
+                <Mini label="Fatigue" value={fatigue.score} />
+                <Mini label="Risk" value={risk.score} />
+                <Mini label="Trend" value={trend.label} />
+              </div>
+
+              <div className="mt-5 h-1.5 w-52 overflow-hidden rounded-full bg-slate-700">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-blue-500"
                   style={{ width: `${readiness.score}%` }}
@@ -204,20 +256,19 @@ export default function HeroSection({
               <Mini label="Fatiga" value={atl.toFixed(0)} />
               <Mini label="Forma" value={`${tsb > 0 ? '+' : ''}${tsb.toFixed(0)}`} />
             </div>
+
+            <div className="mt-3 grid grid-cols-3 gap-3">
+              <Mini label="Semana" value={`${week.distance.toFixed(1)} km`} />
+              <Mini label="Sesiones" value={week.count} />
+              <Mini label="Últ. semana" value={`${lastWeek.distance.toFixed(1)} km`} />
+            </div>
+
+            <p className="mt-3 text-right text-xs text-slate-500">
+              Última sync: {lastSync}
+            </p>
           </div>
         </div>
       </div>
     </section>
-  )
-}
-
-function Mini({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/40 px-3 py-2.5">
-      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
-        {label}
-      </p>
-      <p className="mt-1 text-lg font-black text-white">{value}</p>
-    </div>
   )
 }
