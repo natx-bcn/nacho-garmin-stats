@@ -1,32 +1,17 @@
 import {
   Activity,
-  Battery,
-  Gauge,
+  Brain,
   HeartPulse,
+  Mountain,
   TrendingUp,
 } from 'lucide-react'
-
-import MetricChip from '../ui/MetricChip'
-import Panel from '../ui/Panel'
 
 interface QuickStatusRowProps {
   ctl: number
   atl: number
   tsb: number
   vo2Max?: number
-  readiness?: number
-}
-
-function getFormTone(tsb: number) {
-  if (tsb >= 0) return 'good'
-  if (tsb > -10) return 'warning'
-  return 'danger'
-}
-
-function getReadinessTone(readiness: number) {
-  if (readiness >= 80) return 'good'
-  if (readiness >= 55) return 'warning'
-  return 'danger'
+  readiness: number
 }
 
 export default function QuickStatusRow({
@@ -34,46 +19,78 @@ export default function QuickStatusRow({
   atl,
   tsb,
   vo2Max,
-  readiness = 0,
+  readiness,
 }: QuickStatusRowProps) {
   return (
-    <Panel variant="subtle" className="p-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        <MetricChip
-          label="Fitness"
-          value={ctl.toFixed(0)}
-          icon={<TrendingUp size={18} />}
-          tone="info"
-        />
+    <section className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <Status
+        icon={<Brain size={18} />}
+        label="Readiness"
+        value={readiness.toFixed(0)}
+        color="text-cyan-300"
+      />
 
-        <MetricChip
-          label="Fatiga"
-          value={atl.toFixed(0)}
-          icon={<Activity size={18} />}
-          tone="warning"
-        />
+      <Status
+        icon={<TrendingUp size={18} />}
+        label="Fitness"
+        value={ctl.toFixed(0)}
+        color="text-blue-300"
+      />
 
-        <MetricChip
-          label="Forma"
-          value={tsb > 0 ? `+${tsb.toFixed(0)}` : tsb.toFixed(0)}
-          icon={<Gauge size={18} />}
-          tone={getFormTone(tsb)}
-        />
+      <Status
+        icon={<HeartPulse size={18} />}
+        label="Fatiga"
+        value={atl.toFixed(0)}
+        color="text-orange-300"
+      />
 
-        <MetricChip
-          label="VO2 Max"
-          value={vo2Max ?? '—'}
-          icon={<HeartPulse size={18} />}
-          tone="default"
-        />
+      <Status
+        icon={<Mountain size={18} />}
+        label="Forma"
+        value={`${tsb > 0 ? '+' : ''}${tsb.toFixed(0)}`}
+        color={
+          tsb > 5
+            ? 'text-green-300'
+            : tsb > -10
+              ? 'text-cyan-300'
+              : 'text-orange-300'
+        }
+      />
 
-        <MetricChip
-          label="Readiness"
-          value={readiness || '—'}
-          icon={<Battery size={18} />}
-          tone={readiness ? getReadinessTone(readiness) : 'default'}
-        />
+      <Status
+        icon={<Activity size={18} />}
+        label="VO₂max"
+        value={vo2Max?.toFixed(1) ?? '--'}
+        color="text-purple-300"
+      />
+    </section>
+  )
+}
+
+function Status({
+  icon,
+  label,
+  value,
+  color,
+}: {
+  icon: React.ReactNode
+  label: string
+  value: string
+  color: string
+}) {
+  return (
+    <div className="group rounded-2xl border border-slate-700/40 bg-slate-900/55 px-4 py-3 transition-all hover:border-cyan-400/30 hover:bg-slate-900">
+      <div className="mb-2 flex items-center justify-between">
+        <div className={color}>{icon}</div>
+
+        <div className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
+          {label}
+        </div>
       </div>
-    </Panel>
+
+      <div className={`text-3xl font-black ${color}`}>
+        {value}
+      </div>
+    </div>
   )
 }
