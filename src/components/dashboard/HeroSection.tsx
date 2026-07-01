@@ -8,9 +8,11 @@ import {
 
 import type { AthenaReport } from '../../lib/athena/models'
 import athenaHero from '../../assets/athena-hero.jpg'
+import type { AthenaViewModel } from '../../lib/athena/view'
 
 interface HeroSectionProps {
   athena: AthenaReport
+  athenaView: AthenaViewModel
   week: {
     distance: number
     duration: number
@@ -90,6 +92,7 @@ function Mini({
 
 export default function HeroSection({
   athena,
+  athenaView,
   week,
   lastWeek,
   ctl,
@@ -100,13 +103,11 @@ export default function HeroSection({
   sparkPoints,
 }: HeroSectionProps) {
   const {
-    readiness,
-    recovery,
-    fatigue,
-    risk,
-    trend,
-    explanation,
-  } = athena.analysis
+  recovery,
+  fatigue,
+  risk,
+  trend,
+} = athena.analysis
 
   return (
     <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-cyan-950/20 xl:p-8">
@@ -138,17 +139,17 @@ export default function HeroSection({
             <div className="mt-6">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-cyan-300">
-                  Athena Intelligence
+                 {athenaView.hero.title}
                 </span>
 
                 <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-                  Confidence {explanation.summary}
+                    {athenaView.hero.subtitle}
                 </span>
               </div>
 
               <div className="mt-3 flex items-end gap-2">
                 <span className="text-6xl font-black leading-none text-cyan-300 drop-shadow-[0_0_30px_rgba(34,211,238,0.45)]">
-                  {readiness.score}
+                  {athenaView.hero.score}
                 </span>
                 <span className="mb-1.5 text-2xl font-black text-slate-400">
                   /100
@@ -156,11 +157,11 @@ export default function HeroSection({
               </div>
 
               <p className="mt-2 max-w-xl text-base text-slate-100">
-                {explanation.summary}
+                {athenaView.hero.label}
               </p>
 
               <div className="mt-4 space-y-2">
-                {explanation.reasons.map((reason) => (
+                {athenaView.hero.reasons.map((reason) => (
                   <div
                     key={reason}
                     className="flex items-center gap-2 text-sm text-slate-300"
@@ -181,7 +182,7 @@ export default function HeroSection({
               <div className="mt-5 h-1.5 w-52 overflow-hidden rounded-full bg-slate-700">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-blue-500"
-                  style={{ width: `${readiness.score}%` }}
+                  style={{ width: `${athenaView.hero.score}%` }}
                 />
               </div>
             </div>

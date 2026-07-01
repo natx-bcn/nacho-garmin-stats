@@ -4,23 +4,6 @@ import type { AthenaViewModel } from './AthenaViewModel'
 import { buildRecommendation } from './builders/recommendationBuilder'
 import { buildReadiness } from './builders/readinessBuilder'
 
-function buildHeroMessage(report: AthenaReport): string {
-  const recommendation = report.coach.recommendation
-
-  if (recommendation.includes('tempo')) {
-    return 'Hoy es un buen día para trabajar calidad.'
-  }
-
-  if (recommendation.includes('recovery') || recommendation.includes('easy')) {
-    return 'Hoy priorizaría recuperar bien.'
-  }
-
-  if (recommendation.includes('rest')) {
-    return 'Hoy descansaría para asimilar la carga.'
-  }
-
-  return 'Hoy elegiría una sesión controlada.'
-}
 
 function buildRecommendationDescription(report: AthenaReport): string {
   const recommendation = report.coach.recommendation
@@ -65,22 +48,80 @@ function buildTomorrow(report: AthenaReport): string {
   )
 }
 
+function buildHeroReasons(report: AthenaReport): string[] {
+  const { recovery, risk, trend, readiness } = report.analysis
+
+  const reasons: string[] = []
+
+  if (recovery.score >= 60) {
+    reasons.push('Has recuperado bien la carga reciente.')
+  } else {
+    reasons.push('La recuperación aún no es óptima, pero está controlada.')
+  }
+
+  if (risk.score < 50) {
+    reasons.push('El riesgo actual es bajo.')
+  } else {
+    reasons.push('El riesgo requiere prudencia.')
+  }
+
+  if (trend.label.toLowerCase().includes('descend')) {
+    if (readiness.score >= 75) {
+      reasons.push('Aunque la tendencia baja, la recuperación compensa.')
+    } else {
+      reasons.push('La tendencia reciente aconseja controlar la intensidad.')
+    }
+  } else {
+    reasons.push('La tendencia permite seguir progresando.')
+  }
+
+  return reasons
+}
+
 export function presentAthena(
   report: AthenaReport,
 ): AthenaViewModel {
   const readiness = buildReadiness(report.analysis.readiness.score)
 
   return {
-    hero: {
-      title: 'Athena',
-      message: buildHeroMessage(report),
-      status: report.coach.status,
+   hero: {
+    title: 'Athena Score',
+
+    score: readiness.score,
+
+    label:
+        readiness.score >= 90
+        ? 'Excelente para entrenar'
+        : readiness.score >= 75
+            ? 'Muy buen momento'
+            : readiness.score >= 60
+            ? 'Buen estado'
+            : readiness.score >= 40
+                ? 'Entrena con control'
+                : 'Prioriza la recuperación',
+
+    subtitle:
+        readiness.score >= 90
+        ? 'Tienes una ventana muy favorable para entrenar.'
+        : readiness.score >= 75
+            ? 'Hoy puedes aprovechar una sesión productiva.'
+            : readiness.score >= 60
+            ? 'Buen día para seguir sumando.'
+            : readiness.score >= 40
+                ? 'Mejor controla la intensidad.'
+                : 'Recuperar hoy te hará mejorar mañana.',
+
+    summary: 'Mi recomendación para hoy',
+
+    reasons: buildHeroReasons(report),
+
+    status: report.coach.status,
     },
 
     recommendation: {
-      title: buildRecommendation(report.coach.recommendation),
-      description: buildRecommendationDescription(report),
-      confidence: report.coach.confidence,
+        title: 'Hoy haría…',
+        description: buildRecommendation(report.coach.recommendation),
+        confidence: report.coach.confidence,
     },
 
     readiness,

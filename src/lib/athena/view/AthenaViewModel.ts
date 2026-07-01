@@ -1,7 +1,11 @@
 export interface AthenaViewModel {
   hero: {
     title: string
-    message: string
+    subtitle: string
+    score: number
+    label: string
+    summary: string
+    reasons: string[]
     status: string
   }
 

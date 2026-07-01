@@ -120,6 +120,7 @@ export default function Dashboard() {
       <div className="space-y-5 px-3 pb-6 pt-5 sm:px-5 sm:pt-7 lg:px-6">
         <HeroSection
           athena={athena}
+          athenaView={athenaView}
           week={week}
           lastWeek={lastWeek}
           ctl={ctl}
@@ -132,9 +133,9 @@ export default function Dashboard() {
 
         <AthenaHomeCard
           readyScore={athenaView.readiness.score}
-          message={athenaView.hero.message}
-          decision={athenaView.recommendation.title}
-          description={athenaView.recommendation.description}
+          message={athenaView.hero.summary}
+          decision={athenaView.recommendation.description}
+          description="Trabaja el umbral sin generar una fatiga excesiva."
           confidence={athenaView.recommendation.confidence}
           reasons={athenaView.reasons}
           tomorrow={athenaView.tomorrow}

@@ -7,21 +7,25 @@ export function evaluateTrend(
 
   let direction: AthenaTrend['direction']
   let label: string
+  let reason: string
 
   if (diff > 50) {
     direction = 'up'
-    label = 'Mejorando'
+    label = 'Acumulando carga'
+    reason = `La carga semanal ha aumentado ${diff.toFixed(0)} TSS respecto a la semana anterior.`
   } else if (diff < -50) {
     direction = 'down'
-    label = 'Descendiendo'
+    label = 'Recuperando carga'
+    reason = `La carga semanal ha bajado ${Math.abs(diff).toFixed(0)} TSS respecto a la semana anterior. Esto favorece la recuperación.`
   } else {
     direction = 'stable'
-    label = 'Estable'
+    label = 'Carga estable'
+    reason = `La carga semanal se mantiene estable respecto a la semana anterior.`
   }
 
   return {
     direction,
     label,
-    reason: `Variación de carga semanal: ${diff.toFixed(0)} TSS.`,
+    reason,
   }
 }
