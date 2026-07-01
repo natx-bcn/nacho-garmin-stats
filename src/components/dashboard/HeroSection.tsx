@@ -87,7 +87,13 @@ export default function HeroSection({
             </h1>
 
             <p className="mt-1.5 text-base text-slate-300">
-              Martes, 1 de julio
+                {new Intl.DateTimeFormat('es-ES', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                })
+                    .format(new Date())
+                    .replace(/^./, (char) => char.toUpperCase())}
             </p>
 
             <div className="mt-6">
