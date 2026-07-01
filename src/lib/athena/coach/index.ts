@@ -1,1 +1,1 @@
-export * from './athenaCoach'
+export { evaluateAthenaCoach } from './athenaCoach'

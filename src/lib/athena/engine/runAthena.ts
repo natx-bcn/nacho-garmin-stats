@@ -31,7 +31,63 @@ export function runAthena(context: AthenaContext): AthenaReport {
       fitness: 0,
     },
 
-    analysis: {},
+    analysis: {
+        status: {
+            readiness,
+            trainingState,
+        },
+        readiness,
+        recovery: {
+            score: readiness.score,
+            level: readiness.level,
+            reason: readiness.reason,
+        },
+        fatigue: {
+            score: Math.max(0, Math.min(100, Math.round(context.atl ?? 0))),
+            level: context.atl > context.ctl ? 'high' : 'controlled',
+            reason:
+            context.atl > context.ctl
+                ? 'La fatiga reciente está por encima de la carga estable.'
+                : 'La fatiga reciente está controlada respecto a tu base actual.',
+        },
+        fitness: {
+            ctl: context.ctl,
+            atl: context.atl,
+            tsb: context.tsb,
+        },
+        trend: {
+            direction: 'stable',
+            label: 'Tendencia estable',
+            reason: 'Athena calculará la tendencia avanzada en una fase posterior.',
+        },
+        risk: {
+            level: context.tsb < -15 ? 'high' : context.tsb < -5 ? 'moderate' : 'low',
+            score: context.tsb < -15 ? 80 : context.tsb < -5 ? 50 : 20,
+            reason:
+            context.tsb < -15
+                ? 'La forma está muy negativa y aumenta el riesgo de fatiga acumulada.'
+                : context.tsb < -5
+                ? 'Hay cierta carga acumulada, pero todavía parece manejable.'
+                : 'La carga actual parece bien tolerada.',
+        },
+        coach,
+        priorities: {
+            primary: coach.recommendation,
+            reason: coach.reason,
+        },
+        prediction: {
+            tomorrow: 'Athena podrá predecir tu estado de mañana en una fase posterior.',
+            expectedEffect: coach.reason,
+        },
+        brief,
+        insights,
+        scores: {
+            training: Math.round(context.ctl ?? 0),
+            recovery: readiness.score,
+            consistency: 75,
+            fitness: Math.round(context.ctl ?? 0),
+        },
+    },
 
     coach,
 
@@ -40,6 +96,6 @@ export function runAthena(context: AthenaContext): AthenaReport {
     predictions: [],
 
     brief,
-    
+
   }
 }
