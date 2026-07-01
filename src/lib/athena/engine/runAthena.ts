@@ -4,9 +4,13 @@ import { analyzeAthenaInsights } from '../insights'
 
 import type { AthenaContext, AthenaReport } from '../models'
 import { generateDailyBrief } from '../brief'
+import { evaluateRecovery } from '../analysis/recovery'
+import { evaluateFatigue } from '../analysis/fatigue'
 
 export function runAthena(context: AthenaContext): AthenaReport {
   const readiness = analyzeReadiness(context)
+  const recovery = evaluateRecovery(context)
+  const fatigue = evaluateFatigue(context)
   const trainingState = analyzeTrainingState(context)
 
  const coach = evaluateAthenaCoach(context, readiness)
@@ -37,19 +41,8 @@ export function runAthena(context: AthenaContext): AthenaReport {
             trainingState,
         },
         readiness,
-        recovery: {
-            score: readiness.score,
-            level: readiness.level,
-            reason: readiness.reason,
-        },
-        fatigue: {
-            score: Math.max(0, Math.min(100, Math.round(context.atl ?? 0))),
-            level: context.atl > context.ctl ? 'high' : 'controlled',
-            reason:
-            context.atl > context.ctl
-                ? 'La fatiga reciente está por encima de la carga estable.'
-                : 'La fatiga reciente está controlada respecto a tu base actual.',
-        },
+        recovery,
+        fatigue,
         fitness: {
             ctl: context.ctl,
             atl: context.atl,

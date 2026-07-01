@@ -1,0 +1,1 @@
+export { evaluateFatigue } from './evaluateFatigue'

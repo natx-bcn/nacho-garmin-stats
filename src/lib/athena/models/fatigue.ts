@@ -1,5 +1,11 @@
 export interface AthenaFatigue {
   score: number
-  level: string
+
+  level:
+    | 'minimal'
+    | 'low'
+    | 'moderate'
+    | 'high'
+
   reason: string
 }
