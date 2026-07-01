@@ -3,6 +3,7 @@ import { evaluateAthenaCoach } from '../coach'
 import { analyzeAthenaInsights } from '../insights'
 
 import type { AthenaContext, AthenaReport } from '../models'
+import { generateDailyBrief } from '../brief'
 
 export function runAthena(context: AthenaContext): AthenaReport {
   const readiness = analyzeReadiness(context)
@@ -10,6 +11,12 @@ export function runAthena(context: AthenaContext): AthenaReport {
 
  const coach = evaluateAthenaCoach(context, readiness)
  const insights = analyzeAthenaInsights(context)
+
+ const brief = generateDailyBrief(
+  readiness,
+  coach,
+  insights,
+)
 
   return {
     status: {
@@ -31,5 +38,8 @@ export function runAthena(context: AthenaContext): AthenaReport {
     insights,
 
     predictions: [],
+
+    brief,
+    
   }
 }

@@ -22,6 +22,7 @@ import TrendCard from '../components/TrendCard'
 import ConsistencyCard from '../components/ConsistencyCard'
 import InsightsPanel from '../components/dashboard/InsightsPanel'
 import { evaluateAthena } from '../lib/athena'
+import AthenaDailyBriefCard from '../components/dashboard/AthenaDailyBriefCard'
 
 import {
   ResponsiveContainer,
@@ -116,6 +117,7 @@ export default function Dashboard() {
           lastSync={lastSync}
           sparkPoints={sparkPoints}
         />
+        <AthenaDailyBriefCard athena={athena} />
       </div>
 
       <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 lg:px-6">
