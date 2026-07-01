@@ -1,26 +1,42 @@
 ﻿import { Link } from 'react-router-dom'
 
 import { useActivityStore } from '../stores/activityStore'
-import { formatDuration, formatPace, sportIcon, sportColor } from '../utils/formatters'
-import { daysAgo } from '../utils/date'
 import { useFitnessHistory } from '../hooks/useFitnessHistory'
 import { useWeekComparison } from '../hooks/useWeekComparison'
+import { useSportVolume } from '../hooks/useSportVolume'
 import { useTrainingStreak } from '../hooks/useTrainingStreak'
+import { useZoneDistribution } from '../hooks/useZoneDistribution'
+import usePerformanceEngine from '../hooks/usePerformanceEngine'
 
 import HeroSection from '../components/dashboard/HeroSection'
+import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'
+import QuickStatusRow from '../components/dashboard/QuickStatusRow'
+import MissionGrid from '../components/dashboard/MissionGrid'
+import PerformanceGrid from '../components/dashboard/PerformanceGrid'
+import HomeActivityRow from '../components/dashboard/HomeActivityRow'
+import HomeAnalysisGrid from '../components/dashboard/HomeAnalysisGrid'
+
+import RadialProgress from '../components/RadialProgress'
 import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
 import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
 import RacePredictionsCard from '../components/RacePredictionsCard'
 import SyncStatusCard from '../components/SyncStatusCard'
-
-
-import { evaluateAthena } from '../lib/athena'
-import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'
-import QuickStatusRow from '../components/dashboard/QuickStatusRow'
-import MissionGrid from '../components/dashboard/MissionGrid'
-//import HistoryGrid from '../components/dashboard/HistoryGrid'
+import TrainingSummaryCard from '../components/TrainingSummaryCard'
+import TrendCard from '../components/TrendCard'
+import ConsistencyCard from '../components/ConsistencyCard'
 import HomeFooter from '../components/home/HomeFooter'
 
+import { evaluateAthena } from '../lib/athena'
+import { sportIcon } from '../utils/formatters'
+
+import {
+  ResponsiveContainer,
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  Tooltip,
+} from 'recharts'
 
 function LoadingScreen() {
   return (
@@ -56,7 +72,10 @@ export default function Dashboard() {
 
   const { current: fitness, sparkPoints } = useFitnessHistory()
   const { current: week, previous: lastWeek } = useWeekComparison()
+  const { bySport: sportHours, totalHours, percentages } = useSportVolume(30)
   useTrainingStreak()
+  const { slices: zoneSlices, isAerobicFocused } = useZoneDistribution(30)
+  const { weeklyLoad } = usePerformanceEngine()
 
   if (loading) return <LoadingScreen />
   if (error || activities.length === 0) return <EmptyScreen />
@@ -73,9 +92,10 @@ export default function Dashboard() {
     lastWeekLoad: lastWeek.tss,
     weekDistance: week.distance,
     activitiesThisWeek: week.count,
-    isAerobicFocused: true,
+    isAerobicFocused,
   })
 
+  const maxWeekTSS = Math.max(...weeklyLoad.map(w => w.tss), 1)
 
   const lastSync = stats?.syncedAt
     ? new Date(stats.syncedAt).toLocaleDateString('es-ES', {
@@ -90,7 +110,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-w-0 flex-1 overflow-y-auto bg-[#070d1a]">
-      <div className="px-3 pb-5 pt-5 sm:px-5 sm:pt-7 lg:px-6">
+      <div className="space-y-5 px-3 pb-6 pt-5 sm:px-5 sm:pt-7 lg:px-6">
         <HeroSection
           athena={athena}
           week={week}
@@ -102,6 +122,7 @@ export default function Dashboard() {
           lastSync={lastSync}
           sparkPoints={sparkPoints}
         />
+
         <AthenaHomePanel
           athena={athena}
           tsb={tsb}
@@ -119,27 +140,22 @@ export default function Dashboard() {
           readiness={athena.scores.training}
         />
 
-      </div>
-
-      <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 lg:px-6">
         <MissionGrid>
           <WeeklyGoalsCard />
-
           <RacePredictionsCard />
-
           <WeeklyCalendarCard activities={activities} />
         </MissionGrid>
-{/*
+
+        <HomeActivityRow activities={activities} insights={athena.insights} />
+
         <TrainingSummaryCard />
 
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          <PerformanceGrid>
-            <TrendCard />
-            <ConsistencyCard />
-          </PerformanceGrid>
-        </div>
+        <PerformanceGrid>
+          <TrendCard />
+          <ConsistencyCard />
+        </PerformanceGrid>
 
-        <div className="rounded-xl border border-slate-700/40 bg-slate-800/50 p-4 sm:p-5">
+        <section className="rounded-2xl border border-slate-700/40 bg-slate-900/60 p-4 sm:p-5">
           <SectionHeader
             left="Carga semanal (TSS) · 16 semanas"
             rightLink={{ to: '/fitness', label: 'Ver completo →' }}
@@ -176,10 +192,10 @@ export default function Dashboard() {
               esta semana {week.tss > 0 ? `${Math.round(week.tss)} TSS` : ''}
             </span>
           </div>
-        </div>
+        </section>
 
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          <div className="rounded-xl border border-slate-700/40 bg-slate-800/50 p-4 sm:p-5">
+        <HomeAnalysisGrid>
+          <div className="rounded-2xl border border-slate-700/40 bg-slate-900/60 p-4 sm:p-5">
             <div className="mb-4 text-xs uppercase tracking-wider text-slate-500">
               Volumen · últimos 30 días
             </div>
@@ -233,7 +249,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-700/40 bg-slate-800/50 p-4 sm:p-5">
+          <div className="rounded-2xl border border-slate-700/40 bg-slate-900/60 p-4 sm:p-5">
             <div className="mb-1 text-xs uppercase tracking-wider text-slate-500">
               Zonas FC · 30 días
             </div>
@@ -284,95 +300,7 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
-        </div>
-*/}
-        <section>
-          <SectionHeader
-            left="Últimas actividades"
-            rightLink={{ to: '/activities', label: 'Ver todas →' }}
-          />
-
-          <div className="space-y-2">
-            {activities.slice(0, 6).map(a => (
-              <Link
-                key={a.id}
-                to={`/activity/${a.id}`}
-                className="group flex flex-col gap-3 rounded-xl border border-slate-700/40 bg-slate-800/30 px-4 py-3 transition-all hover:border-slate-600/50 hover:bg-slate-800/70 sm:flex-row sm:items-center sm:gap-4"
-              >
-                <div className="flex min-w-0 flex-1 items-center gap-3">
-                  <div
-                    className="h-2 w-2 shrink-0 rounded-full"
-                    style={{
-                      background: sportColor(a.sport),
-                      boxShadow: `0 0 6px ${sportColor(a.sport)}88`,
-                    }}
-                  />
-
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-medium text-slate-200 group-hover:text-white">
-                      {a.title}
-                    </div>
-
-                    <div className="text-xs text-slate-500">
-                      {daysAgo(a.startTime) === 0
-                        ? 'Hoy'
-                        : daysAgo(a.startTime) === 1
-                          ? 'Ayer'
-                          : `Hace ${daysAgo(a.startTime)}d`}
-                      {' · '}
-                      {sportIcon(a.sport)}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid shrink-0 grid-cols-3 gap-3 text-left sm:flex sm:items-center sm:gap-5 sm:text-right">
-                  {a.distance > 0 && (
-                    <div>
-                      <div className="text-sm font-bold text-slate-200">
-                        {a.distance.toFixed(1)}
-                        <span className="ml-0.5 text-xs text-slate-500">km</span>
-                      </div>
-
-                      {a.avgPace && (
-                        <div className="text-xs text-slate-500">
-                          {formatPace(a.avgPace)}
-                        </div>
-                      )}
-
-                      {a.avgSpeed && !a.avgPace && (
-                        <div className="text-xs text-slate-500">
-                          {a.avgSpeed.toFixed(1)} km/h
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  <div>
-                    <div className="text-sm font-bold text-slate-200">
-                      {formatDuration(a.duration)}
-                    </div>
-
-                    {a.avgHR > 0 && (
-                      <div className="text-xs text-slate-500">{a.avgHR} bpm</div>
-                    )}
-                  </div>
-
-                  {a.tss != null && (
-                    <div className="sm:w-10 sm:text-right">
-                      <div
-                        className="text-sm font-bold"
-                        style={{ color: sportColor(a.sport) }}
-                      >
-                        {Math.round(a.tss)}
-                      </div>
-                      <div className="text-xs text-slate-600">TSS</div>
-                    </div>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
+        </HomeAnalysisGrid>
 
         <HomeFooter />
 
