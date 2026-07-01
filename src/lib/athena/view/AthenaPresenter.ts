@@ -5,24 +5,6 @@ import { buildRecommendation } from './builders/recommendationBuilder'
 import { buildReadiness } from './builders/readinessBuilder'
 
 
-function buildRecommendationDescription(report: AthenaReport): string {
-  const recommendation = report.coach.recommendation
-
-  if (recommendation.includes('tempo')) {
-    return 'Trabaja el umbral sin generar una fatiga excesiva.'
-  }
-
-  if (recommendation.includes('recovery') || recommendation.includes('easy')) {
-    return 'Suma minutos fáciles y deja que el cuerpo recupere.'
-  }
-
-  if (recommendation.includes('rest')) {
-    return 'No necesitas añadir carga hoy. Recuperar también es entrenar.'
-  }
-
-  return report.coach.reason
-}
-
 function buildReasons(report: AthenaReport): string[] {
   const { recovery, risk, trend } = report.analysis
 
