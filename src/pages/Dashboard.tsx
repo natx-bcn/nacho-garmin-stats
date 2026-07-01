@@ -12,7 +12,6 @@ import usePerformanceEngine from '../hooks/usePerformanceEngine'
 
 import HeroSection from '../components/dashboard/HeroSection'
 import RadialProgress from '../components/RadialProgress'
-import AICoachCard from '../components/dashboard/AICoachCard'
 import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
 import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
 import RacePredictionsCard from '../components/RacePredictionsCard'
@@ -20,9 +19,8 @@ import SyncStatusCard from '../components/SyncStatusCard'
 import TrainingSummaryCard from '../components/TrainingSummaryCard'
 import TrendCard from '../components/TrendCard'
 import ConsistencyCard from '../components/ConsistencyCard'
-import InsightsPanel from '../components/dashboard/InsightsPanel'
 import { evaluateAthena } from '../lib/athena'
-import AthenaDailyBriefCard from '../components/dashboard/AthenaDailyBriefCard'
+import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'
 
 import {
   ResponsiveContainer,
@@ -117,24 +115,18 @@ export default function Dashboard() {
           lastSync={lastSync}
           sparkPoints={sparkPoints}
         />
-        <AthenaDailyBriefCard athena={athena} />
-      </div>
-
-      <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 lg:px-6">
-        <InsightsPanel insights={athena.insights} />
-        
-        <AICoachCard
+        <AthenaHomePanel
           athena={athena}
           tsb={tsb}
           ctl={ctl}
           atl={atl}
-          weekCount={week.count}
           weekDistance={week.distance}
           weekTss={week.tss}
-          lastWeekTss={lastWeek.tss}
-          isAerobicFocused={isAerobicFocused}
         />
+      </div>
 
+      <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 lg:px-6">
+        
         <WeeklyGoalsCard />
 
         <RacePredictionsCard />
