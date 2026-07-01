@@ -7,6 +7,7 @@ import {
 } from 'recharts'
 
 import type { AthenaReport } from '../../lib/athena/models'
+import athenaHero from '../../assets/athena-hero.jpg'
 
 interface HeroSectionProps {
   athena: AthenaReport
@@ -109,8 +110,19 @@ export default function HeroSection({
 
   return (
     <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-cyan-950/20 xl:p-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.22),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(147,51,234,0.2),transparent_35%)]" />
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950/40 via-slate-950/85 to-slate-950" />
+     {/* Imagen de fondo */}
+    <div
+        className="absolute inset-0 bg-cover bg-center opacity-35"
+        style={{
+            backgroundImage: `url(${athenaHero})`,
+        }}
+    />
+
+    {/* Glow */}
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(147,51,234,0.16),transparent_35%)]" />
+
+    {/* Oscurecedor */}
+    <div className="absolute inset-0 bg-gradient-to-br from-slate-950/10 via-slate-950/30 to-slate-950/50" />
 
       <div className="relative">
         <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr] xl:items-end">

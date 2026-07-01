@@ -9,7 +9,7 @@ import { useZoneDistribution } from '../hooks/useZoneDistribution'
 import usePerformanceEngine from '../hooks/usePerformanceEngine'
 
 import HeroSection from '../components/dashboard/HeroSection'
-import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'
+
 import QuickStatusRow from '../components/dashboard/QuickStatusRow'
 import MissionGrid from '../components/dashboard/MissionGrid'
 import PerformanceGrid from '../components/dashboard/PerformanceGrid'
@@ -28,8 +28,11 @@ import HomeFooter from '../components/home/HomeFooter'
 
 import { evaluateAthena } from '../lib/athena'
 import { sportIcon } from '../utils/formatters'
-import AthenaIntelligenceCard from '../components/dashboard/AthenaIntelligenceCard'
-import AthenaDecisionCard from '../components/dashboard/AthenaDecisionCard'
+{/* import AthenaIntelligenceCard from '../components/dashboard/AthenaIntelligenceCard'
+import AthenaDecisionCard from '../components/dashboard/AthenaDecisionCard' 
+import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'*/}
+import AthenaHomeCard from '../components/dashboard/AthenaHomeCard'
+import { presentAthena } from '../lib/athena/view'
 
 import {
   ResponsiveContainer,
@@ -97,6 +100,8 @@ export default function Dashboard() {
     isAerobicFocused,
   })
 
+  const athenaView = presentAthena(athena)
+
   const maxWeekTSS = Math.max(...weeklyLoad.map(w => w.tss), 1)
 
   const lastSync = stats?.syncedAt
@@ -125,10 +130,21 @@ export default function Dashboard() {
           sparkPoints={sparkPoints}
         />
 
-        <AthenaDecisionCard  athena={athena}  />
-        
-        <AthenaIntelligenceCard athena={athena} />
+        <AthenaHomeCard
+          readyScore={athenaView.readiness.score}
+          message={athenaView.hero.message}
+          decision={athenaView.recommendation.title}
+          description={athenaView.recommendation.description}
+          confidence={athenaView.recommendation.confidence}
+          reasons={athenaView.reasons}
+          tomorrow={athenaView.tomorrow}
+        />
 
+        {/* <AthenaDecisionCard athena={athena} /> */}
+
+        {/* <AthenaIntelligenceCard athena={athena} /> */}
+
+        {/* 
         <AthenaHomePanel
           athena={athena}
           tsb={tsb}
@@ -137,6 +153,7 @@ export default function Dashboard() {
           weekDistance={week.distance}
           weekTss={week.tss}
         />
+        */}
 
         <QuickStatusRow
           ctl={ctl}
