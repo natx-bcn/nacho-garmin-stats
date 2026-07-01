@@ -1,8 +1,18 @@
 import { Link } from 'react-router-dom'
+import {
+  Activity,
+  CalendarDays,
+  Dumbbell,
+  Moon,
+  Trophy,
+  Zap,
+} from 'lucide-react'
+
+import Panel from './ui/Panel'
 import { formatDuration, sportIcon } from '../utils/formatters'
 import type { Sport } from '../types/garmin'
 
-type Activity = {
+type ActivityItem = {
   id: number | string
   title: string
   sport: Sport
@@ -14,126 +24,175 @@ type Activity = {
 }
 
 type WeeklyCalendarCardProps = {
-  activities: Activity[]
+  activities: ActivityItem[]
 }
 
 export default function WeeklyCalendarCard({ activities }: WeeklyCalendarCardProps) {
   const days = buildWeekDays(activities)
+  const today = days.find(day => day.isToday) ?? days[0]
+  const nextActive = days.find(day => !day.isToday && day.activities.length > 0)
+
+  const totalSessions = days.reduce((a, d) => a + d.activities.length, 0)
+  const totalDistance = days.reduce((a, d) => a + d.totalDistance, 0)
+  const totalTss = days.reduce((a, d) => a + d.totalTss, 0)
+  const activeDays = days.filter(d => d.activities.length > 0).length
 
   return (
-    <section className="rounded-2xl border border-slate-700/50 bg-slate-900/60 p-4 sm:p-5">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-4">
+    <Panel variant="default" className="flex h-full flex-col p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <div className="text-xs text-slate-500 uppercase tracking-widest mb-1">
-            Calendario inteligente
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-200">
+            <CalendarDays size={13} />
+            Calendario
           </div>
-          <h2 className="text-lg sm:text-xl font-black text-slate-100">
+
+          <h2 className="text-2xl font-black tracking-tight text-white">
             Semana actual
           </h2>
+
+          <p className="mt-1 text-xs leading-5 text-slate-400">
+            {getWeekRangeLabel()}
+          </p>
         </div>
 
-        <div className="text-xs text-slate-500 sm:text-right">
-          {getWeekRangeLabel()}
+        <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-right">
+          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+            Activos
+          </div>
+          <div className="mt-1 text-sm font-black text-cyan-100">
+            {activeDays}/7 días
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-2">
         {days.map(day => (
-          <div
-            key={day.key}
-            className={`rounded-xl border p-3 min-h-[120px] xl:min-h-[150px] ${
-              day.isToday
-                ? 'border-blue-500/60 bg-blue-500/10'
-                : 'border-slate-700/40 bg-slate-950/35'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <div className="text-xs text-slate-500 uppercase">
-                  {day.label}
-                  {day.isToday && <span className="ml-2 text-blue-400">Hoy</span>}
-                </div>
-                <div className="text-sm font-bold text-slate-200">{day.dayNumber}</div>
-              </div>
-
-              <span
-                className="h-2.5 w-2.5 rounded-full"
-                style={{
-                  background: day.color,
-                  boxShadow: `0 0 10px ${day.color}`,
-                }}
-              />
-            </div>
-
-            {day.activities.length === 0 ? (
-              <div className="mt-5 text-center text-xs text-slate-600">
-                Descanso
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {day.activities.slice(0, 3).map(activity => (
-                  <Link
-                    key={activity.id}
-                    to={`/activity/${activity.id}`}
-                    className="block rounded-lg border border-slate-700/40 bg-slate-900/70 p-2 hover:border-slate-500/70 transition-colors"
-                  >
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 min-w-0">
-                      <span className="shrink-0">{sportIcon(activity.sport)}</span>
-                      <span className="truncate">{activity.title}</span>
-                    </div>
-
-                    <div className="mt-1 text-[11px] text-slate-500">
-                      {activity.distance ? `${activity.distance.toFixed(1)} km` : ''}
-                      {activity.distance && activity.duration ? ' · ' : ''}
-                      {activity.duration ? formatDuration(activity.duration) : ''}
-                    </div>
-
-                    {activity.tss != null && (
-                      <div className="mt-1 text-[11px] text-blue-400 font-bold">
-                        {Math.round(activity.tss)} TSS
-                      </div>
-                    )}
-                  </Link>
-                ))}
-
-                {day.activities.length > 3 && (
-                  <div className="text-[11px] text-slate-500">
-                    +{day.activities.length - 3} más
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="mt-3 pt-2 border-t border-slate-800">
-              <div className="flex justify-between text-[11px] text-slate-500">
-                <span>{day.totalDistance.toFixed(1)} km</span>
-                <span>{Math.round(day.totalTss)} TSS</span>
-              </div>
-            </div>
-          </div>
+          <DayPill key={day.key} day={day} />
         ))}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <SummaryBox label="Sesiones" value={String(days.reduce((a, d) => a + d.activities.length, 0))} />
-        <SummaryBox label="Km semana" value={`${days.reduce((a, d) => a + d.totalDistance, 0).toFixed(1)} km`} />
-        <SummaryBox label="Carga" value={`${Math.round(days.reduce((a, d) => a + d.totalTss, 0))} TSS`} />
-        <SummaryBox label="Días activos" value={String(days.filter(d => d.activities.length > 0).length)} />
+      <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
+              Hoy
+            </div>
+            <div className="mt-1 text-lg font-black text-white">
+              {today.label} {today.dayNumber}
+            </div>
+          </div>
+
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-300">
+            {today.activities.length > 0 ? <Activity size={20} /> : <Moon size={20} />}
+          </div>
+        </div>
+
+        {today.activities.length === 0 ? (
+          <p className="text-sm leading-6 text-slate-400">
+            Día sin actividad registrada. Buena oportunidad para recuperar o hacer movilidad.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {today.activities.slice(0, 2).map(activity => (
+              <Link
+                key={activity.id}
+                to={`/activity/${activity.id}`}
+                className="block rounded-2xl border border-slate-700/45 bg-slate-900/65 p-3 transition hover:border-cyan-400/30"
+              >
+                <div className="flex items-center gap-2 text-sm font-bold text-slate-100">
+                  <span>{sportIcon(activity.sport)}</span>
+                  <span className="truncate">{activity.title}</span>
+                </div>
+
+                <div className="mt-1 text-xs text-slate-500">
+                  {activity.distance ? `${activity.distance.toFixed(1)} km` : ''}
+                  {activity.distance && activity.duration ? ' · ' : ''}
+                  {activity.duration ? formatDuration(activity.duration) : ''}
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
-    </section>
+
+      <div className="mt-4 rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-4">
+        <div className="mb-1 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-300">
+          Próximo foco
+        </div>
+
+        <p className="text-sm leading-6 text-slate-300">
+          {nextActive
+            ? `${nextActive.label}: ${nextActive.activities[0]?.title ?? 'actividad programada'}`
+            : 'No hay más actividades esta semana. Athena puede sugerir el siguiente bloque.'}
+        </p>
+      </div>
+
+      <div className="mt-auto pt-5">
+        <div className="grid grid-cols-3 gap-2">
+          <Summary label="Sesiones" value={String(totalSessions)} />
+          <Summary label="Km" value={totalDistance.toFixed(1)} />
+          <Summary label="TSS" value={String(Math.round(totalTss))} />
+        </div>
+      </div>
+    </Panel>
   )
 }
 
-function SummaryBox({ label, value }: { label: string; value: string }) {
+function DayPill({
+  day,
+}: {
+  day: ReturnType<typeof buildWeekDays>[number]
+}) {
+  const Icon = getDayIcon(day)
+
   return (
-    <div className="rounded-xl border border-slate-700/40 bg-slate-950/35 p-3">
-      <div className="text-xs text-slate-500 uppercase tracking-wider">{label}</div>
-      <div className="text-base sm:text-lg font-black text-slate-100 mt-1">{value}</div>
+    <div
+      className={`
+        rounded-2xl border px-2 py-3 text-center transition
+        ${
+          day.isToday
+            ? 'border-cyan-400/50 bg-cyan-400/10'
+            : 'border-slate-700/45 bg-slate-950/35'
+        }
+      `}
+    >
+      <div className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">
+        {day.label}
+      </div>
+
+      <div className="mt-1 text-sm font-black text-slate-100">
+        {day.dayNumber}
+      </div>
+
+      <div
+        className="mx-auto mt-2 flex h-8 w-8 items-center justify-center rounded-xl"
+        style={{
+          background: `${day.color}18`,
+          color: day.color,
+        }}
+      >
+        <Icon size={16} />
+      </div>
+
+      <div className="mt-2 text-[10px] font-bold text-slate-500">
+        {day.activities.length > 0 ? `${day.activities.length} act.` : 'off'}
+      </div>
     </div>
   )
 }
 
-function buildWeekDays(activities: Activity[]) {
+function Summary({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-700/45 bg-slate-950/35 px-3 py-3 text-center">
+      <div className="text-lg font-black text-white">{value}</div>
+      <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-slate-500">
+        {label}
+      </div>
+    </div>
+  )
+}
+
+function buildWeekDays(activities: ActivityItem[]) {
   const start = getStartOfWeek(new Date())
   const todayKey = toLocalDateKey(new Date())
 
@@ -142,10 +201,18 @@ function buildWeekDays(activities: Activity[]) {
     date.setDate(start.getDate() + index)
 
     const key = toLocalDateKey(date)
-    const dayActivities = activities.filter(a => toActivityLocalDateKey(a.startTime) === key)
+    const dayActivities = activities.filter(
+      a => toActivityLocalDateKey(a.startTime) === key,
+    )
 
-    const totalDistance = dayActivities.reduce((sum, a) => sum + Number(a.distance || 0), 0)
-    const totalTss = dayActivities.reduce((sum, a) => sum + Number(a.tss || 0), 0)
+    const totalDistance = dayActivities.reduce(
+      (sum, a) => sum + Number(a.distance || 0),
+      0,
+    )
+    const totalTss = dayActivities.reduce(
+      (sum, a) => sum + Number(a.tss || 0),
+      0,
+    )
 
     return {
       key,
@@ -160,10 +227,24 @@ function buildWeekDays(activities: Activity[]) {
   })
 }
 
+function getDayIcon(day: ReturnType<typeof buildWeekDays>[number]) {
+  if (day.activities.length === 0) return Moon
+
+  const title = day.activities.map(a => a.title.toLowerCase()).join(' ')
+  const sports = day.activities.map(a => a.sport).join(' ')
+
+  if (title.includes('fuerza')) return Dumbbell
+  if (title.includes('padbol')) return Trophy
+  if (title.includes('series') || title.includes('tempo') || title.includes('calidad')) return Zap
+  if (sports.includes('running')) return Activity
+
+  return Activity
+}
+
 function getDayColor(tss: number, count: number) {
-  if (count === 0) return '#475569'
+  if (count === 0) return '#64748b'
   if (tss < 35) return '#22c55e'
-  if (tss < 70) return '#3b82f6'
+  if (tss < 70) return '#38bdf8'
   if (tss < 110) return '#eab308'
   return '#ef4444'
 }
@@ -195,5 +276,11 @@ function getWeekRangeLabel() {
   const end = new Date(start)
   end.setDate(start.getDate() + 6)
 
-  return `${start.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} - ${end.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}`
+  return `${start.toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'short',
+  })} - ${end.toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'short',
+  })}`
 }
