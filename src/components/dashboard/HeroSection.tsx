@@ -5,12 +5,9 @@ import {
   Tooltip,
   XAxis,
 } from 'recharts'
-import { ShieldCheck, Sparkles, Zap } from 'lucide-react'
+import { Activity, ShieldCheck, Sparkles, Zap } from 'lucide-react'
 
 import Logo from './Logo'
-import HeroMetrics from './HeroMetrics'
-import WeeklySummary from './WeeklySummary'
-import QuickActions from './QuickActions'
 import FormBadge from '../FormBadge'
 import type { AthenaReport } from '../../lib/athena/models'
 
@@ -35,9 +32,8 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({
-  athena,  
+  athena,
   week,
-  lastWeek,
   ctl,
   atl,
   tsb,
@@ -45,50 +41,50 @@ export default function HeroSection({
   lastSync,
   sparkPoints,
 }: HeroSectionProps) {
+  const readiness = athena.status.readiness
+  const trainingState = athena.status.trainingState
+
   const tsbColor =
     tsb > 10
       ? '#22c55e'
       : tsb > -5
-        ? '#3b82f6'
+        ? '#38bdf8'
         : tsb > -15
           ? '#eab308'
           : tsb > -25
             ? '#f97316'
             : '#ef4444'
 
-const readiness = athena.status.readiness
-const trainingState = athena.status.trainingState
-
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#081321] p-5 shadow-2xl sm:p-7 lg:p-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.24),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.18),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.2),rgba(15,23,42,0.85))]" />
+    <section className="relative overflow-hidden rounded-[2.25rem] border border-cyan-300/20 bg-slate-950 p-6 shadow-2xl shadow-cyan-950/20 sm:p-8 lg:p-10">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(34,211,238,0.28),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.22),transparent_30%),linear-gradient(135deg,rgba(15,23,42,0.2),rgba(2,6,23,0.95))]" />
 
-      <div className="absolute inset-x-0 bottom-0 h-36 opacity-25">
-        <div className="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-cyan-500/10 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-56 opacity-40">
         <svg
-          viewBox="0 0 1200 240"
-          className="absolute bottom-0 h-full w-full text-slate-700/40"
+          viewBox="0 0 1200 280"
+          className="absolute bottom-0 h-full w-full text-cyan-950"
           preserveAspectRatio="none"
         >
           <path
-            d="M0 220L120 140L220 185L360 70L520 170L680 95L830 155L980 55L1200 170V240H0Z"
+            d="M0 245L110 150L210 195L355 85L520 178L675 108L830 162L990 62L1200 178V280H0Z"
             fill="currentColor"
           />
         </svg>
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950 to-transparent" />
       </div>
 
       <div className="relative z-10">
-        <div className="mb-7 flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+        <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <Logo />
 
           <div className="flex flex-col gap-3 md:items-end">
-            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-cyan-100">
               <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
-              v5.4.1
+              V6 Athena Home
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 Synced
               </span>
@@ -100,35 +96,68 @@ const trainingState = athena.status.trainingState
           </div>
         </div>
 
-        <div className="mb-7 grid gap-7 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="grid gap-8 xl:grid-cols-[1.15fr_0.85fr] xl:items-end">
           <div>
-            <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-200">
-              <Zap className="h-3.5 w-3.5" />
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-cyan-100">
+              <Zap className="h-3.5 w-3.5 text-cyan-300" />
               Athena · {readiness.level} · {readiness.score}/100
             </p>
 
-            <h2 className="text-3xl font-black tracking-tight text-white md:text-5xl">
+            <h1 className="max-w-4xl text-4xl font-black tracking-tight text-white md:text-6xl">
               Buenos días, Nacho 👋
-            </h2>
+            </h1>
 
-            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-300 md:text-lg">
-              {readiness.reason} Estado actual: {trainingState.state}.
+            <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 md:text-xl">
+              {readiness.reason}{' '}
+              <span className="font-semibold text-cyan-200">
+                Estado actual: {trainingState.state}.
+              </span>
             </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur">
+                <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                  Semana
+                </div>
+                <div className="mt-1 text-3xl font-black text-white">
+                  {week.distance.toFixed(1)}
+                  <span className="ml-1 text-sm text-slate-400">km</span>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur">
+                <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                  Sesiones
+                </div>
+                <div className="mt-1 text-3xl font-black text-white">
+                  {week.count}
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur">
+                <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                  TSS
+                </div>
+                <div className="mt-1 text-3xl font-black text-white">
+                  {week.tss.toFixed(0)}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
-            <div className="mb-2 flex items-start justify-between">
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+            <div className="mb-4 flex items-start justify-between gap-4">
               <div>
-                <div className="text-xs uppercase tracking-widest text-slate-500">
+                <div className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
                   Estado de forma
                 </div>
 
-                <div className="mt-1 flex items-center gap-3">
+                <div className="mt-2 flex items-center gap-3">
                   <span
-                    className="text-4xl font-black"
+                    className="text-5xl font-black"
                     style={{
                       color: tsbColor,
-                      textShadow: `0 0 30px ${tsbColor}66`,
+                      textShadow: `0 0 34px ${tsbColor}66`,
                     }}
                   >
                     {tsb > 0 ? '+' : ''}
@@ -141,93 +170,94 @@ const trainingState = athena.status.trainingState
 
               {vo2max && (
                 <div className="text-right">
-                  <div className="text-xs uppercase tracking-wider text-slate-500">
+                  <div className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
                     VO₂max
                   </div>
-                  <div className="text-3xl font-black text-purple-400">{vo2max}</div>
+                  <div className="mt-2 text-4xl font-black text-purple-300">
+                    {vo2max}
+                  </div>
                   <div className="text-xs text-slate-500">ml/kg/min</div>
                 </div>
               )}
             </div>
 
-            <div className="h-20">
+            <div className="h-28">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={sparkPoints} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                <AreaChart
+                  data={sparkPoints}
+                  margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                >
                   <defs>
-                    <linearGradient id="heroCTL" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    <linearGradient id="heroCtlV6" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#38bdf8" stopOpacity={0} />
                     </linearGradient>
-                    <linearGradient id="heroATL" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                    <linearGradient id="heroAtlV6" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#fb923c" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#fb923c" stopOpacity={0} />
                     </linearGradient>
                   </defs>
+
                   <XAxis dataKey="date" hide />
+
                   <Tooltip
                     contentStyle={{
-                      background: '#1e293b',
-                      border: '1px solid #334155',
-                      borderRadius: 8,
+                      background: '#020617',
+                      border: '1px solid rgba(148,163,184,.25)',
+                      borderRadius: 14,
                       fontSize: 11,
                     }}
                     formatter={(v: unknown, n: unknown) => [String(v), String(n)]}
                   />
+
                   <Area
                     type="monotone"
                     dataKey="ctl"
                     name="Fitness"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    fill="url(#heroCTL)"
+                    stroke="#38bdf8"
+                    strokeWidth={2.5}
+                    fill="url(#heroCtlV6)"
                     dot={false}
                   />
+
                   <Area
                     type="monotone"
                     dataKey="atl"
                     name="Fatiga"
-                    stroke="#f97316"
-                    strokeWidth={1.5}
-                    fill="url(#heroATL)"
+                    stroke="#fb923c"
+                    strokeWidth={1.8}
+                    fill="url(#heroAtlV6)"
                     dot={false}
-                    strokeDasharray="3 2"
+                    strokeDasharray="4 3"
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
 
-            <div className="mt-2 flex flex-wrap gap-4">
-              <LegendDot color="#3b82f6" label="Fitness" />
-              <LegendDot color="#f97316" label="Fatiga" />
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              <MiniMetric label="Fitness" value={ctl.toFixed(0)} />
+              <MiniMetric label="Fatiga" value={atl.toFixed(0)} />
+              <MiniMetric label="Forma" value={tsb > 0 ? `+${tsb.toFixed(0)}` : tsb.toFixed(0)} />
             </div>
           </div>
         </div>
 
-        <div className="mb-7">
-          <HeroMetrics
-            ctl={ctl}
-            atl={atl}
-            weekTss={week.tss}
-            weekDistance={week.distance}
-            weekCount={week.count}
-          />
+        <div className="mt-8 flex items-center gap-2 text-xs text-slate-500">
+          <Activity size={14} className="text-cyan-300" />
+          Athena First · los datos importantes, antes del ruido.
         </div>
-
-        <div className="mb-7">
-          <WeeklySummary week={week} lastWeek={lastWeek} />
-        </div>
-
-        <QuickActions />
       </div>
     </section>
   )
 }
 
-function LegendDot({ color, label }: { color: string; label: string }) {
+function MiniMetric({ label, value }: { label: string; value: string }) {
   return (
-    <span className="flex items-center gap-1.5 text-xs text-slate-500">
-      <span className="inline-block h-0.5 w-3 rounded" style={{ background: color }} />
-      {label}
-    </span>
+    <div className="rounded-2xl border border-white/10 bg-slate-950/35 px-3 py-3">
+      <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
+        {label}
+      </div>
+      <div className="mt-1 text-lg font-black text-slate-100">{value}</div>
+    </div>
   )
 }
