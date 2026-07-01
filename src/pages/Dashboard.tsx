@@ -29,6 +29,7 @@ import HomeFooter from '../components/home/HomeFooter'
 import { evaluateAthena } from '../lib/athena'
 import { sportIcon } from '../utils/formatters'
 import AthenaIntelligenceCard from '../components/dashboard/AthenaIntelligenceCard'
+import AthenaDecisionCard from '../components/dashboard/AthenaDecisionCard'
 
 import {
   ResponsiveContainer,
@@ -124,6 +125,8 @@ export default function Dashboard() {
           sparkPoints={sparkPoints}
         />
 
+        <AthenaDecisionCard  athena={athena}  />
+        
         <AthenaIntelligenceCard athena={athena} />
 
         <AthenaHomePanel
