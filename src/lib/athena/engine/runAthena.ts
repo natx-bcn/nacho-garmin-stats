@@ -1,26 +1,55 @@
 import { analyzeReadiness, analyzeTrainingState } from '../analyzer'
-import { evaluateAthenaCoach } from '../coach'
 import { analyzeAthenaInsights } from '../insights'
+
+import { evaluateScore } from '../score'
+import { buildExplanation } from '../explanation'
 
 import type { AthenaContext, AthenaReport } from '../models'
 import { generateDailyBrief } from '../brief'
 import { evaluateRecovery } from '../analysis/recovery'
 import { evaluateFatigue } from '../analysis/fatigue'
+import { evaluateRisk } from '../analysis/risk'
+import { evaluateTrend } from '../analysis/trend'
+import {  evaluateDecision,  mapDecisionToCoach,} from '../decision'
 
 export function runAthena(context: AthenaContext): AthenaReport {
   const readiness = analyzeReadiness(context)
-  const recovery = evaluateRecovery(context)
-  const fatigue = evaluateFatigue(context)
-  const trainingState = analyzeTrainingState(context)
 
- const coach = evaluateAthenaCoach(context, readiness)
- const insights = analyzeAthenaInsights(context)
+    const recovery = evaluateRecovery(context)
 
- const brief = generateDailyBrief(
-  readiness,
-  coach,
-  insights,
-)
+    const fatigue = evaluateFatigue(context)
+
+    const trainingState = analyzeTrainingState(context)
+
+    const risk = evaluateRisk(recovery, fatigue)
+
+    const trend = evaluateTrend(context)
+
+    const decision = evaluateDecision({
+    recovery,
+    fatigue,
+    risk,
+    trend,
+    })
+
+    const score = evaluateScore(
+        recovery,
+        fatigue,
+        risk,
+        trend,
+        )
+
+    const explanation = buildExplanation(score)
+
+    const coach = mapDecisionToCoach(decision)
+
+    const insights = analyzeAthenaInsights(context)
+
+    const brief = generateDailyBrief(
+    readiness,
+    coach,
+    insights,
+    )
 
   return {
     status: {
@@ -48,21 +77,8 @@ export function runAthena(context: AthenaContext): AthenaReport {
             atl: context.atl,
             tsb: context.tsb,
         },
-        trend: {
-            direction: 'stable',
-            label: 'Tendencia estable',
-            reason: 'Athena calculará la tendencia avanzada en una fase posterior.',
-        },
-        risk: {
-            level: context.tsb < -15 ? 'high' : context.tsb < -5 ? 'moderate' : 'low',
-            score: context.tsb < -15 ? 80 : context.tsb < -5 ? 50 : 20,
-            reason:
-            context.tsb < -15
-                ? 'La forma está muy negativa y aumenta el riesgo de fatiga acumulada.'
-                : context.tsb < -5
-                ? 'Hay cierta carga acumulada, pero todavía parece manejable.'
-                : 'La carga actual parece bien tolerada.',
-        },
+        trend,
+        risk,
         coach,
         priorities: {
             primary: coach.recommendation,
@@ -74,6 +90,7 @@ export function runAthena(context: AthenaContext): AthenaReport {
         },
         brief,
         insights,
+        explanation,
         scores: {
             training: Math.round(context.ctl ?? 0),
             recovery: readiness.score,

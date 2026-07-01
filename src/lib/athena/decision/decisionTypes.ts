@@ -23,3 +23,17 @@ export interface AthenaDecision {
   reason: string
   expectedEffect: string
 }
+
+import type {
+  AthenaFatigue,
+  AthenaRecovery,
+  AthenaRisk,
+  AthenaTrend,
+} from '../models'
+
+export interface AthenaDecisionInput {
+  recovery: AthenaRecovery
+  fatigue: AthenaFatigue
+  risk: AthenaRisk
+  trend: AthenaTrend
+}

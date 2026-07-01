@@ -11,6 +11,7 @@ import type { AthenaTrend } from './trend'
 import type { AthenaRisk } from './risk'
 import type { AthenaPriorities } from './priorities'
 import type { AthenaPrediction } from './prediction'
+import type { AthenaExplanation } from '../explanation/buildExplanation'
 
 export interface AthenaAnalysis {
   status: AthenaStatus
@@ -26,4 +27,5 @@ export interface AthenaAnalysis {
   brief: AthenaDailyBrief
   insights: AthenaInsight[]
   scores: AthenaScores
+  explanation: AthenaExplanation
 }

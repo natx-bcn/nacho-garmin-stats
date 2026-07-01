@@ -1,0 +1,1 @@
+export { evaluateTrend } from './evaluateTrend'

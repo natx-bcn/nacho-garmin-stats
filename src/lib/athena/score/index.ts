@@ -1,0 +1,1 @@
+export { evaluateScore } from './evaluateScore'
