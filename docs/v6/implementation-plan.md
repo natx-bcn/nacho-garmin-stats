@@ -1,3 +1,5 @@
+> Estado: V6.0.0 finalizada el 2026-07-01.
+
 # V6 — Implementation Plan
 
 ## Sprint 1 — Base visual

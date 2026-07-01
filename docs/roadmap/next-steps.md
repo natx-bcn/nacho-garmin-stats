@@ -1,173 +1,94 @@
 # Next Steps
 
-# V5.4 — Dashboard PRO ✅
+# V6.1 — Athena Coach
 
 ## Estado
 
-COMPLETADA
-
-## Objetivo alcanzado
-
-Transformar el Dashboard inicial en un panel moderno, visual y profesional, mejorando la jerarquía visual y la experiencia de usuario.
-
-## Funcionalidades implementadas
-
-- [x] Dashboard Hero PRO
-- [x] Runner Status Card
-- [x] Coach Card
-- [x] Weekly Goals
-- [x] Race Predictions
-- [x] Trend Card
-- [x] Consistency Card
-- [x] Weekly Load
-- [x] Sport Volume
-- [x] HR Zones
-- [x] Recent Activities
-- [x] Training Summary
-- [x] Garmin Sync Status
-- [x] Dashboard Header PRO
-
----
-
-# V5.5 — Intelligent Dashboard 🚧
-
-## Estado
-
-EN DESARROLLO
+Pendiente
 
 ## Objetivo
 
-Evolucionar Garmin Stats desde un dashboard de métricas hacia una plataforma de análisis inteligente capaz de interpretar automáticamente los datos del usuario y ofrecer recomendaciones personalizadas.
+Convertir Athena en un entrenador inteligente que responda cada día a la pregunta principal:
+
+> ¿Qué debería hacer hoy y por qué?
 
 ---
 
-# Sprint 1 — Foundation ✅
+# Sprint 1 — Mission of the Day ⭐⭐⭐⭐⭐
 
 ## Objetivo
 
-Crear la base visual y arquitectónica para el resto del proyecto.
-
-### Completado
-
-- [x] Design System
-- [x] GlassCard
-- [x] MetricCard
-- [x] DashboardTitle
-- [x] PageHeader
-- [x] Section
-- [x] TrendBadge
-- [x] Framer Motion
-- [x] Motion System
-- [x] Executive Summary Engine (base)
-- [x] Insight Engine (base)
-- [x] Insights Panel integrado en el Dashboard
-
----
-
-# Sprint 2 — Analysis Engine ⭐⭐⭐⭐⭐
-
-## Objetivo
-
-Centralizar toda la inteligencia del Dashboard en una única capa de análisis.
+Crear una tarjeta central con la misión recomendada para el día.
 
 ### Tareas
 
-- [ ] Activity Analyzer
-- [ ] Fitness Analyzer
-- [ ] Trend Analyzer
-- [ ] Dashboard Analysis
-- [ ] Integración con datos reales Garmin
-- [ ] Eliminación de cálculos duplicados del Dashboard
-
-Resultado esperado:
-
-```ts
-const analysis = analyzeDashboard(data)
-```
-
-```ts
-{
-  executiveSummary,
-  insights,
-  recommendations,
-  warnings,
-  achievements,
-  trends
-}
-```
+- [ ] Crear componente `MissionOfTheDay`.
+- [ ] Mostrar entrenamiento recomendado.
+- [ ] Mostrar duración estimada.
+- [ ] Mostrar intensidad recomendada.
+- [ ] Mostrar impacto esperado.
+- [ ] Añadir botón principal `Comenzar`.
 
 ---
 
-# Sprint 3 — Executive Coach ⭐⭐⭐⭐⭐
+# Sprint 2 — Coach Intelligence ⭐⭐⭐⭐⭐
 
 ## Objetivo
 
-Convertir los datos en recomendaciones inteligentes.
+Mejorar la lógica de recomendación de Athena.
 
 ### Tareas
 
-- [ ] Executive Summary dinámico
-- [ ] Recomendaciones automáticas
-- [ ] Alertas de fatiga
-- [ ] Detección de mejoras
-- [ ] Detección de riesgos
-- [ ] Interpretación automática del entrenamiento
-
-Ejemplos
-
-- Fitness en aumento
-- Carga excesiva
-- Recuperación insuficiente
-- Semana muy consistente
-- Ritmo mejorando
-- Eficiencia aeróbica en crecimiento
+- [ ] Analizar fatiga.
+- [ ] Analizar forma.
+- [ ] Analizar carga semanal.
+- [ ] Analizar objetivos pendientes.
+- [ ] Analizar últimos entrenamientos.
+- [ ] Generar explicación clara de la recomendación.
 
 ---
 
-# Sprint 4 — Dashboard Evolution ⭐⭐⭐⭐☆
+# Sprint 3 — Adaptive Planning ⭐⭐⭐⭐☆
 
 ## Objetivo
 
-Mejorar la experiencia visual utilizando el nuevo Design System.
+Permitir que Athena sugiera ajustes en la semana.
 
 ### Tareas
 
-- [ ] Smart Cards
-- [ ] Achievements
-- [ ] Badges
-- [ ] Skeleton Loading
-- [ ] Empty States
-- [ ] Dashboard personalizable
-- [ ] Widgets configurables
+- [ ] Detectar semanas de descarga.
+- [ ] Detectar exceso de intensidad.
+- [ ] Detectar falta de fuerza.
+- [ ] Detectar falta de Zona 2.
+- [ ] Proponer cambios en el calendario semanal.
 
 ---
 
-# Sprint 5 — AI Coach ⭐⭐⭐⭐⭐
+# Sprint 4 — Prediction Intelligence ⭐⭐⭐⭐☆
 
 ## Objetivo
 
-Crear un asistente inteligente de entrenamiento.
+Hacer que las predicciones no solo muestren marcas, sino evolución esperada.
 
-### Funcionalidades
+### Tareas
 
-- [ ] Explicar métricas automáticamente
-- [ ] Analizar entrenamientos
-- [ ] Detectar patrones
-- [ ] Recomendar entrenamientos
-- [ ] Predecir rendimiento
-- [ ] Objetivos personalizados
+- [ ] Explicar por qué sube o baja una predicción.
+- [ ] Añadir tendencia de confianza.
+- [ ] Detectar distancia con más potencial.
+- [ ] Relacionar objetivos semanales con predicciones.
 
 ---
 
-# Ideas futuras (V5.6+)
+# Sprint 5 — Athena Timeline ⭐⭐⭐⭐⭐
 
-- Heatmap tipo GitHub
-- AI Coach conversacional
-- Predicción de marca en carrera
-- Comparativa mensual y anual
-- Planificador inteligente de entrenamientos
-- Sincronización manual desde la web
-- Centro de sincronización (Sync Center)
-- Informes PDF automáticos
-- Exportación avanzada de estadísticas
-- Dashboard completamente configurable
+## Objetivo
+
+Crear una línea temporal de decisiones, cambios y aprendizajes de Athena.
+
+### Tareas
+
+- [ ] Mostrar decisiones recientes.
+- [ ] Mostrar cambios desde ayer.
+- [ ] Mostrar evolución semanal.
+- [ ] Mostrar alertas importantes.
+- [ ] Mostrar log de recomendaciones.
