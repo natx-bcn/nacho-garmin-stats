@@ -1,6 +1,9 @@
 import type { AthenaAnalysis } from './AthenaAnalysis'
 import type { AthenaScores } from './AthenaScores'
 import type { AthenaStatus } from './AthenaStatus'
+import type { AthenaCoach } from './AthenaCoach'
+import type { AthenaInsight } from './AthenaInsight'
+
 
 export interface AthenaReport {
   status: AthenaStatus
@@ -9,9 +12,9 @@ export interface AthenaReport {
 
   analysis: AthenaAnalysis
 
-  coach: ReturnType<typeof import('../coach').evaluateCoach>
+  coach: AthenaCoach
 
-  insights: string[]
+  insights: AthenaInsight[]
 
   predictions: string[]
 }

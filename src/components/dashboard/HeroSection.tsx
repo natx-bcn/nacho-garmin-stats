@@ -12,8 +12,10 @@ import HeroMetrics from './HeroMetrics'
 import WeeklySummary from './WeeklySummary'
 import QuickActions from './QuickActions'
 import FormBadge from '../FormBadge'
+import type { AthenaReport } from '../../lib/athena/models'
 
 interface HeroSectionProps {
+  athena: AthenaReport
   week: {
     distance: number
     duration: number
@@ -33,6 +35,7 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({
+  athena,  
   week,
   lastWeek,
   ctl,
@@ -52,6 +55,9 @@ export default function HeroSection({
           : tsb > -25
             ? '#f97316'
             : '#ef4444'
+
+const readiness = athena.status.readiness
+const trainingState = athena.status.trainingState
 
   return (
     <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#081321] p-5 shadow-2xl sm:p-7 lg:p-8">
@@ -98,7 +104,7 @@ export default function HeroSection({
           <div>
             <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-200">
               <Zap className="h-3.5 w-3.5" />
-              Dashboard PRO
+              Athena · {readiness.level} · {readiness.score}/100
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-white md:text-5xl">
@@ -106,8 +112,7 @@ export default function HeroSection({
             </h2>
 
             <p className="mt-3 max-w-3xl text-base leading-7 text-slate-300 md:text-lg">
-              Has entrenado {week.count} días esta semana. Mantén el equilibrio entre carga,
-              recuperación y constancia.
+              {readiness.reason} Estado actual: {trainingState.state}.
             </p>
           </div>
 

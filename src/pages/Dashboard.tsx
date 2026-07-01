@@ -21,7 +21,7 @@ import TrainingSummaryCard from '../components/TrainingSummaryCard'
 import TrendCard from '../components/TrendCard'
 import ConsistencyCard from '../components/ConsistencyCard'
 import InsightsPanel from '../components/dashboard/InsightsPanel'
-import { generateInsights } from '../lib/athena'
+import { evaluateAthena } from '../lib/athena'
 
 import {
   ResponsiveContainer,
@@ -78,6 +78,17 @@ export default function Dashboard() {
   const ctl = fitness?.ctl ?? 0
   const atl = fitness?.atl ?? 0
 
+  const athena = evaluateAthena({
+    ctl,
+    atl,
+    tsb,
+    weeklyLoad: week.tss,
+    lastWeekLoad: lastWeek.tss,
+    weekDistance: week.distance,
+    activitiesThisWeek: week.count,
+    isAerobicFocused: true,
+  })
+
   const maxWeekTSS = Math.max(...weeklyLoad.map(w => w.tss), 1)
 
   const lastSync = stats?.syncedAt
@@ -91,17 +102,11 @@ export default function Dashboard() {
     ? stats.vo2maxHistory.at(-1)!.value.toFixed(1)
     : null
 
-  const insights = generateInsights({
-    weeklyLoad: week.tss,
-    previousWeeklyLoad: lastWeek.tss,
-    recoveryHours: Math.max(tsb * 4, 0),
-    weeklyActivities: week.count,
-  })
-  
   return (
     <div className="min-w-0 flex-1 overflow-y-auto bg-[#070d1a]">
       <div className="px-3 pb-5 pt-5 sm:px-5 sm:pt-7 lg:px-6">
         <HeroSection
+          athena={athena}
           week={week}
           lastWeek={lastWeek}
           ctl={ctl}
@@ -114,9 +119,10 @@ export default function Dashboard() {
       </div>
 
       <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 lg:px-6">
-        <InsightsPanel insights={insights} />
+        <InsightsPanel insights={athena.insights} />
         
         <AICoachCard
+          athena={athena}
           tsb={tsb}
           ctl={ctl}
           atl={atl}
@@ -125,9 +131,6 @@ export default function Dashboard() {
           weekTss={week.tss}
           lastWeekTss={lastWeek.tss}
           isAerobicFocused={isAerobicFocused}
-          daysSinceLastActivity={
-            activities.length ? daysAgo(activities[0].startTime) : undefined
-          }
         />
 
         <WeeklyGoalsCard />

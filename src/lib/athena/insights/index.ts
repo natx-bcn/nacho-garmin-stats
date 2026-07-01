@@ -1,1 +1,1 @@
-export * from './insightEngine'
+export * from './athenaInsights'

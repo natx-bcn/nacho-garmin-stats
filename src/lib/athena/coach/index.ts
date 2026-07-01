@@ -1,1 +1,1 @@
-export * from '../../coach/coachEngine'
+export * from './athenaCoach'

@@ -1,8 +1,9 @@
-import { evaluateCoach } from '../../lib/coach/coachEngine'
+import type { AthenaReport } from '../../lib/athena/models'
 import Card from '../ui/Card'
 import Badge from '../ui/Badge'
 
 type AICoachCardProps = {
+  athena: AthenaReport
   tsb: number
   ctl: number
   atl: number
@@ -11,10 +12,10 @@ type AICoachCardProps = {
   weekTss: number
   lastWeekTss: number
   isAerobicFocused: boolean
-  daysSinceLastActivity?: number
 }
 
 export default function AICoachCard({
+  athena,
   tsb,
   ctl,
   atl,
@@ -23,17 +24,9 @@ export default function AICoachCard({
   weekTss,
   lastWeekTss,
   isAerobicFocused,
-  daysSinceLastActivity,
 }: AICoachCardProps) {
-  const coach = evaluateCoach({
-    ctl,
-    atl,
-    tsb,
-    weeklyLoad: weekTss,
-    activitiesThisWeek: weekCount,
-    daysSinceLastActivity,
-  })
-
+  const coach = athena.coach
+  
   const loadRatio = lastWeekTss > 0 ? weekTss / lastWeekTss : 1
 
   return (
