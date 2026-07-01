@@ -2,10 +2,10 @@ import { Brain, CircleAlert, TrendingUp } from 'lucide-react'
 
 import { GlassCard } from '../ui/GlassCard'
 import { TrendBadge } from '../ui/TrendBadge'
-import type { Insight } from '../../lib/analysis/insightEngine'
+import type { AthenaInsight } from '../../lib/athena/models'
 
 type Props = {
-  insights: Insight[]
+  insights: AthenaInsight[]
 }
 
 const severityVariant = {

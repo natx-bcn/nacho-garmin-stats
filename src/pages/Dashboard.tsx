@@ -5,35 +5,22 @@ import { formatDuration, formatPace, sportIcon, sportColor } from '../utils/form
 import { daysAgo } from '../utils/date'
 import { useFitnessHistory } from '../hooks/useFitnessHistory'
 import { useWeekComparison } from '../hooks/useWeekComparison'
-import { useSportVolume } from '../hooks/useSportVolume'
 import { useTrainingStreak } from '../hooks/useTrainingStreak'
-import { useZoneDistribution } from '../hooks/useZoneDistribution'
-import usePerformanceEngine from '../hooks/usePerformanceEngine'
 
 import HeroSection from '../components/dashboard/HeroSection'
-import RadialProgress from '../components/RadialProgress'
 import WeeklyCalendarCard from '../components/WeeklyCalendarCard'
 import WeeklyGoalsCard from '../components/WeeklyGoalsCard'
 import RacePredictionsCard from '../components/RacePredictionsCard'
 import SyncStatusCard from '../components/SyncStatusCard'
-import TrainingSummaryCard from '../components/TrainingSummaryCard'
-import TrendCard from '../components/TrendCard'
-import ConsistencyCard from '../components/ConsistencyCard'
+
+
 import { evaluateAthena } from '../lib/athena'
 import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'
 import QuickStatusRow from '../components/dashboard/QuickStatusRow'
 import MissionGrid from '../components/dashboard/MissionGrid'
-import PerformanceGrid from '../components/dashboard/PerformanceGrid'
 //import HistoryGrid from '../components/dashboard/HistoryGrid'
+import HomeFooter from '../components/home/HomeFooter'
 
-import {
-  ResponsiveContainer,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  Tooltip,
-} from 'recharts'
 
 function LoadingScreen() {
   return (
@@ -69,10 +56,7 @@ export default function Dashboard() {
 
   const { current: fitness, sparkPoints } = useFitnessHistory()
   const { current: week, previous: lastWeek } = useWeekComparison()
-  const { bySport: sportHours, totalHours, percentages } = useSportVolume(30)
   useTrainingStreak()
-  const { slices: zoneSlices, isAerobicFocused } = useZoneDistribution(30)
-  const { weeklyLoad } = usePerformanceEngine()
 
   if (loading) return <LoadingScreen />
   if (error || activities.length === 0) return <EmptyScreen />
@@ -92,7 +76,6 @@ export default function Dashboard() {
     isAerobicFocused: true,
   })
 
-  const maxWeekTSS = Math.max(...weeklyLoad.map(w => w.tss), 1)
 
   const lastSync = stats?.syncedAt
     ? new Date(stats.syncedAt).toLocaleDateString('es-ES', {
@@ -146,7 +129,7 @@ export default function Dashboard() {
 
           <WeeklyCalendarCard activities={activities} />
         </MissionGrid>
-
+{/*
         <TrainingSummaryCard />
 
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
@@ -302,7 +285,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-
+*/}
         <section>
           <SectionHeader
             left="Últimas actividades"
@@ -390,6 +373,8 @@ export default function Dashboard() {
             ))}
           </div>
         </section>
+
+        <HomeFooter />
 
         <SyncStatusCard />
 
