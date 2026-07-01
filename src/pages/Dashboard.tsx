@@ -21,6 +21,7 @@ import TrendCard from '../components/TrendCard'
 import ConsistencyCard from '../components/ConsistencyCard'
 import { evaluateAthena } from '../lib/athena'
 import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'
+import QuickStatusRow from '../components/dashboard/QuickStatusRow'
 
 import {
   ResponsiveContainer,
@@ -123,6 +124,15 @@ export default function Dashboard() {
           weekDistance={week.distance}
           weekTss={week.tss}
         />
+
+        <QuickStatusRow
+          ctl={ctl}
+          atl={atl}
+          tsb={tsb}
+          vo2Max={vo2max ? Number(vo2max) : undefined}
+          readiness={athena.scores.training}
+        />
+
       </div>
 
       <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 lg:px-6">
