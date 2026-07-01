@@ -22,6 +22,9 @@ import ConsistencyCard from '../components/ConsistencyCard'
 import { evaluateAthena } from '../lib/athena'
 import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'
 import QuickStatusRow from '../components/dashboard/QuickStatusRow'
+import MissionGrid from '../components/dashboard/MissionGrid'
+import PerformanceGrid from '../components/dashboard/PerformanceGrid'
+//import HistoryGrid from '../components/dashboard/HistoryGrid'
 
 import {
   ResponsiveContainer,
@@ -136,18 +139,21 @@ export default function Dashboard() {
       </div>
 
       <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 lg:px-6">
-        
-        <WeeklyGoalsCard />
+        <MissionGrid>
+          <WeeklyGoalsCard />
 
-        <RacePredictionsCard />
+          <RacePredictionsCard />
 
-        <WeeklyCalendarCard activities={activities} />
+          <WeeklyCalendarCard activities={activities} />
+        </MissionGrid>
 
         <TrainingSummaryCard />
 
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          <TrendCard />
-          <ConsistencyCard />
+          <PerformanceGrid>
+            <TrendCard />
+            <ConsistencyCard />
+          </PerformanceGrid>
         </div>
 
         <div className="rounded-xl border border-slate-700/40 bg-slate-800/50 p-4 sm:p-5">
