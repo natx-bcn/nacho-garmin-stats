@@ -44,20 +44,20 @@ export default function HeroSection({
   const readiness = athena.status.readiness
 
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-slate-700/50 bg-slate-950 shadow-2xl shadow-cyan-950/20">
+    <section className="relative min-h-[330px] overflow-hidden rounded-[2rem] border border-cyan-500/20 bg-[#081321] shadow-2xl shadow-cyan-950/20">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-70"
         style={{ backgroundImage: `url(${heroBg})` }}
       />
 
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20" />
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/35" />
 
-      <div className="relative z-10 p-7 lg:p-10">
-        <div className="mb-14 flex items-start justify-between gap-6">
+      <div className="relative z-10 p-6 lg:p-7">
+        <div className="mb-9 flex items-start justify-between gap-6">
           <Logo />
 
-          <div className="flex flex-col items-end gap-3">
+          <div className="flex flex-col items-end gap-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-cyan-100">
               <Sparkles size={14} />
               V6 Athena Home
@@ -73,42 +73,42 @@ export default function HeroSection({
                 Sync: {lastSync}
               </span>
 
-              <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white/5 text-slate-300">
-                <RefreshCw size={15} />
+              <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-white/5 text-slate-300">
+                <RefreshCw size={14} />
               </span>
             </div>
           </div>
         </div>
 
-        <div className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr] xl:items-end">
+        <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr] xl:items-end">
           <div>
-            <h1 className="text-4xl font-black tracking-tight text-white md:text-5xl">
+            <h1 className="text-4xl font-black tracking-tight text-white xl:text-5xl">
               Buenos días, Nacho 👋
             </h1>
 
-            <p className="mt-2 text-lg text-slate-300">
+            <p className="mt-1.5 text-base text-slate-300">
               Martes, 1 de julio
             </p>
 
-            <div className="mt-8">
+            <div className="mt-6">
               <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-300">
                 Athena Ready
               </p>
 
-              <div className="mt-2 flex items-end gap-2">
-                <span className="text-7xl font-black leading-none text-cyan-300 drop-shadow-[0_0_30px_rgba(34,211,238,0.45)]">
+              <div className="mt-1.5 flex items-end gap-2">
+                <span className="text-6xl font-black leading-none text-cyan-300 drop-shadow-[0_0_30px_rgba(34,211,238,0.45)]">
                   {readiness.score}
                 </span>
-                <span className="mb-2 text-3xl font-black text-slate-400">
+                <span className="mb-1.5 text-2xl font-black text-slate-400">
                   /100
                 </span>
               </div>
 
-              <p className="mt-3 max-w-xl text-lg text-slate-100">
+              <p className="mt-2 max-w-xl text-base text-slate-100">
                 {readiness.reason}
               </p>
 
-              <div className="mt-3 h-2 w-52 overflow-hidden rounded-full bg-slate-700">
+              <div className="mt-2.5 h-1.5 w-52 overflow-hidden rounded-full bg-slate-700">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-blue-500"
                   style={{ width: `${readiness.score}%` }}
@@ -117,15 +117,15 @@ export default function HeroSection({
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-slate-950/45 p-5 backdrop-blur-xl">
-            <div className="mb-3 flex items-start justify-between">
+          <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/45 p-4 backdrop-blur-xl">
+            <div className="mb-2 flex items-start justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
                   Estado de forma
                 </p>
 
-                <div className="mt-2 flex items-center gap-3">
-                  <span className="text-5xl font-black text-cyan-300">
+                <div className="mt-1.5 flex items-center gap-3">
+                  <span className="text-4xl font-black text-cyan-300">
                     {tsb > 0 ? '+' : ''}
                     {Math.round(tsb)}
                   </span>
@@ -138,7 +138,7 @@ export default function HeroSection({
                   <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
                     VO₂max
                   </p>
-                  <p className="mt-1 text-4xl font-black text-purple-300">
+                  <p className="mt-1 text-3xl font-black text-purple-300">
                     {vo2max}
                   </p>
                   <p className="text-xs text-slate-500">ml/kg/min</p>
@@ -146,7 +146,7 @@ export default function HeroSection({
               )}
             </div>
 
-            <div className="h-24">
+            <div className="h-20">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={sparkPoints}>
                   <defs>
@@ -193,7 +193,7 @@ export default function HeroSection({
               </ResponsiveContainer>
             </div>
 
-            <div className="mt-4 grid grid-cols-3 gap-3">
+            <div className="mt-3 grid grid-cols-3 gap-3">
               <Mini label="Fitness" value={ctl.toFixed(0)} />
               <Mini label="Fatiga" value={atl.toFixed(0)} />
               <Mini label="Forma" value={`${tsb > 0 ? '+' : ''}${tsb.toFixed(0)}`} />
@@ -207,11 +207,11 @@ export default function HeroSection({
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3">
-      <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+    <div className="rounded-2xl border border-white/10 bg-slate-950/40 px-3 py-2.5">
+      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
         {label}
       </p>
-      <p className="mt-1 text-xl font-black text-white">{value}</p>
+      <p className="mt-1 text-lg font-black text-white">{value}</p>
     </div>
   )
 }
