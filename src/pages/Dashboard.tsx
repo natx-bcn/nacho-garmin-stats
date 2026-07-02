@@ -33,6 +33,10 @@ import AthenaDecisionCard from '../components/dashboard/AthenaDecisionCard'
 import AthenaHomePanel from '../components/dashboard/AthenaHomePanel'*/}
 import AthenaHomeCard from '../components/dashboard/AthenaHomeCard'
 import { presentAthena } from '../lib/athena/view'
+import { buildAthenaRecommendation } from '../lib/athena/recommendation/buildAthenaRecommendation'
+import { decideWorkout } from '../lib/athena/decision/workoutDecisionEngine'
+import { buildAthenaDecisionContext } from '../lib/athena/context/buildAthenaDecisionContext'
+
 
 import {
   ResponsiveContainer,
@@ -102,6 +106,22 @@ export default function Dashboard() {
 
   const athenaView = presentAthena(athena)
 
+  const athenaContext = buildAthenaDecisionContext({
+    readinessScore: athenaView.readiness.score,
+    ctl,
+    atl,
+  })
+
+  const workoutDecision = decideWorkout(athenaContext)
+
+  const athenaRecommendation = buildAthenaRecommendation({
+    decision: workoutDecision,
+    confidence: athenaView.recommendation.confidence,
+    reasoning: athenaView.reasons,
+    tomorrow: athenaView.tomorrow,
+  })
+
+  
   const maxWeekTSS = Math.max(...weeklyLoad.map(w => w.tss), 1)
 
   const lastSync = stats?.syncedAt
@@ -131,15 +151,8 @@ export default function Dashboard() {
           sparkPoints={sparkPoints}
         />
 
-        <AthenaHomeCard
-          readyScore={athenaView.readiness.score}
-          message={athenaView.hero.summary}
-          decision={athenaView.recommendation.description}
-          description="Trabaja el umbral sin generar una fatiga excesiva."
-          confidence={athenaView.recommendation.confidence}
-          reasons={athenaView.reasons}
-          tomorrow={athenaView.tomorrow}
-        />
+       <AthenaHomeCard recommendation={athenaRecommendation} />
+       
 
         {/* <AthenaDecisionCard athena={athena} /> */}
 
